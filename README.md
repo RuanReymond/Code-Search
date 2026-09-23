@@ -30,14 +30,3 @@ Se quiser adicionar mais serviços, é só editar o arquivo `dados.js`. É fáci
 **E aí, gostou?** Se tiver alguma dúvida, sugestão ou quiser contribuir, é só abrir uma issue aqui no GitHub! 
 
 **#FazTudo #DesenvolvimentoWeb #FácilEPrático**
-
----
-
-**Observações:**
-
-* **Personalize:** Adapte este README para o seu projeto, adicionando mais detalhes sobre as funcionalidades, tecnologias específicas e como contribuir.
-* **Imagens:** Inclua imagens para ilustrar a aplicação e torná-la mais atraente.
-* **Links:** Adicione links para a documentação das tecnologias utilizadas.
-* **Humor:** Use a linguagem que você se sente mais confortável, mas mantenha um tom descontraído e divertido.
-
-**Lembre-se:** O README é a primeira impressão que alguém terá do seu projeto. Faça com que ele seja claro, conciso e convidativo!
