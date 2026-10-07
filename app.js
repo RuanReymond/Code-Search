@@ -43,6 +43,8 @@ function pesquisar() {
         }
     }
 
+    
+
     if (!resultados) {
         resultados = "<p>Nada foi encontrado</p>"
     }
