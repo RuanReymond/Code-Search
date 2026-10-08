@@ -1,4 +1,4 @@
-# Linguagens Info
+# Code Seacher
 
 Aplicação web para pesquisar e consultar linguagens de programação. O usuário digita um termo de busca e a aplicação exibe as linguagens correspondentes, com descrição, categorias, ano de criação e links para o site oficial, a documentação e a página de download.
 
