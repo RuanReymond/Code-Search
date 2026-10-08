@@ -1,32 +1,89 @@
-## **Pesquisa de Profissões de Mão de Obra "Faz Tudo Info" - Imersão Dev com Google Gemini**
+# Linguagens Info
 
-### **O que é o Faz Tudo?**
+Aplicação web para pesquisar e consultar linguagens de programação. O usuário digita um termo de busca e a aplicação exibe as linguagens correspondentes, com descrição, categorias, ano de criação e links para o site oficial, a documentação e a página de download.
 
-É tipo um Google, mas só para os serviços que a gente oferece!  Digita lá o que você precisa e a gente te mostra tudo que temos relacionado a isso. Rápido, fácil e prático, igual pedir pizza no aplicativo.
+## Funcionalidades
 
-### **Como funciona?**
+- Busca por nome, descrição, categoria ou ano de criação.
+- Busca sem distinção de maiúsculas, minúsculas e acentos (por exemplo, `automacao` encontra `Automação`).
+- Listagem completa das linguagens ao abrir a página ou ao pesquisar com o campo vazio.
+- Exibição de categorias, ano de criação e links úteis em cada resultado.
+- Pesquisa pelo botão ou pela tecla Enter.
+- Layout responsivo.
 
-1. **Busca:** Você digita o serviço que quer no campo de pesquisa.
-2. **Mágica:** A aplicação varre todos os nossos serviços e procura por palavras-chave que combinem com o que você digitou.
-3. **Resultado:** Se encontrar algo, mostra pra você numa listinha bem bonitinha, com o nome do serviço, uma descrição e até um link pra saber mais. Se não encontrar nada, te avisa pra você não ficar triste.
+## Tecnologias
 
-### **Tecnologias usadas:**
+- HTML5
+- CSS3
+- JavaScript (sem frameworks ou bibliotecas externas)
 
-* **HTML:** A estrutura básica da página, tipo os ossos do nosso site.
-* **CSS:** Deixa tudo bonitinho e organizado, tipo a roupa que a gente veste.
-* **JavaScript:** A parte mais inteligente, que faz a busca e mostra os resultados.
-* **Um pouquinho de amor:** Pra deixar tudo mais especial!
+## Estrutura do projeto
 
-### **Como usar?**
+```
+.
+├── index.html      # Estrutura da página
+├── style.css       # Estilos
+├── app.js          # Lógica de busca e renderização dos resultados
+├── linguagens.js   # Base de dados das linguagens
+└── README.md
+```
 
-1. **Clone o repositório:** Faz um `git clone` pra baixar o código pra sua máquina.
-2. **Abra o index.html:** Dá um duplo clique no arquivo `index.html` pra abrir no seu navegador favorito.
-3. **Comece a buscar:** Digita o que você quiser no campo de pesquisa e veja a mágica acontecer.
+## Como executar
 
-### **Dica extra:**
+1. Clone o repositório:
 
-Se quiser adicionar mais serviços, é só editar o arquivo `dados.js`. É fácil, fácil!
+   ```bash
+   git clone <url-do-repositorio>
+   ```
 
-**E aí, gostou?** Se tiver alguma dúvida, sugestão ou quiser contribuir, é só abrir uma issue aqui no GitHub! 
+2. Acesse a pasta do projeto:
 
-**#FazTudo #DesenvolvimentoWeb #FácilEPrático**
+   ```bash
+   cd <nome-da-pasta>
+   ```
+
+3. Abra o arquivo `index.html` no navegador.
+
+Não há dependências para instalar nem etapa de build.
+
+## Como adicionar uma linguagem
+
+As linguagens ficam no array `linguagens`, no arquivo `linguagens.js`. Para incluir uma nova, adicione um objeto seguindo esta estrutura:
+
+```js
+{
+    id: 7,
+    nome: "Go",
+    slug: "go",
+    descricao: "Descrição da linguagem.",
+    categoria: ["Backend", "Cloud"],
+    ano: 2009,
+    site: "https://go.dev/",
+    documentacao: "https://go.dev/doc/",
+    download: "https://go.dev/dl/"
+}
+```
+
+| Campo          | Tipo     | Descrição                                      |
+| -------------- | -------- | ---------------------------------------------- |
+| `id`           | número   | Identificador único                            |
+| `nome`         | texto    | Nome da linguagem                              |
+| `slug`         | texto    | Identificador em formato de URL                |
+| `descricao`    | texto    | Resumo sobre a linguagem e seus usos           |
+| `categoria`    | lista    | Áreas de atuação (ex.: Backend, Frontend, IA)  |
+| `ano`          | número   | Ano de criação                                 |
+| `site`         | texto    | Link do site oficial                           |
+| `documentacao` | texto    | Link da documentação                           |
+| `download`     | texto    | Link da página de download                     |
+
+## Linguagens incluídas
+
+Python, JavaScript, Java, C#, PHP e TypeScript.
+
+## Contribuição
+
+Sugestões e melhorias são bem-vindas. Para contribuir, abra uma issue descrevendo a proposta ou envie um pull request.
+
+## Contato
+
+Dúvidas ou suporte: reymondruan4@gmail.com
