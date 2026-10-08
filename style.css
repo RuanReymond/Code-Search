@@ -4,7 +4,7 @@
 /* Estiliza o corpo da página */
 body {
     font-family: "Chakra Petch", sans-serif; /* Define a fonte padrão */
-    background-color: #dcdc5a; /* Cor de fundo da página */
+    background-color: #6599f9; /* Cor de fundo da página */
     display: flex; /* Usa Flexbox para layout */
     flex-direction: column; /* Alinha os itens na vertical */
     align-items: center; /* Centraliza os itens horizontalmente */
@@ -163,7 +163,7 @@ section button {
 
 /* Estiliza o rodapé da página */
 footer {
-    background-color: #c5c550; /* Cor de fundo do rodapé */
+    background-color: #4b6ffd; /* Cor de fundo do rodapé */
     color: #45474B; /* Cor do texto */
     text-align: center; /* Alinha o texto ao centro */
     width: 100%; /* Largura total da página */
