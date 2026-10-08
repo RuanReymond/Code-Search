@@ -1,54 +1,77 @@
+// Remove acentos e deixa em minúsculas (assim "automacao" encontra "Automação")
+function normalizar(texto) {
+    return String(texto)
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "");
+}
+
 function pesquisar() {
 
     // Obtém a seção onde os resultados serão exibidos
     let section = document.getElementById("resultados-pesquisa");
-    console.log(section); // Loga o elemento section no console para verificação
 
-    let campoPesquisa = document.getElementById("campo-pesquisa").value
+    let campoPesquisa = document.getElementById("campo-pesquisa").value;
 
-    console.log(campoPesquisa);
-
-    // se campoPesquisa for uma string sem nada    
-    if (!campoPesquisa){
-        section.innerHTML = "<p>Nada foi encontrado. Você digitou nenhuma palavra de busca</p>"
-        return
-    }
-
-    campoPesquisa = campoPesquisa.toLowerCase()
+    // Se o campo estiver vazio, mostra todas as linguagens
+    let termo = normalizar(campoPesquisa).trim();
 
     // Inicializa uma string vazia para armazenar os resultados
     let resultados = "";
-    let titulo = "";
-    let descricao = "";
-    let tags = "";
 
-    // Itera sobre cada dado na array 'dados'
-    for (let dado of dados) {
-        titulo = dado.titulo.toLowerCase()
-        descricao = dado.descricao.toLowerCase()
-        tags = dado.tags.toLowerCase()
-        // se titulo includes campoPesquisa
-        if(titulo.includes(campoPesquisa)|| descricao.includes(campoPesquisa) || tags.includes (campoPesquisa)) {
-        // cria um novo elemento
+    // Itera sobre cada linguagem do array 'linguagens'
+    for (let linguagem of linguagens) {
+        let nome = normalizar(linguagem.nome);
+        let descricao = normalizar(linguagem.descricao);
+        let categorias = normalizar(linguagem.categoria.join(" "));
+        let ano = String(linguagem.ano);
+
+        // Se algum campo incluir o termo pesquisado
+        if (
+            termo === "" ||
+            nome.includes(termo) ||
+            descricao.includes(termo) ||
+            categorias.includes(termo) ||
+            ano.includes(termo)
+        ) {
+            // Cria uma etiqueta para cada categoria
+            let tagsCategorias = linguagem.categoria
+                .map(cat => `<span class="categoria">${cat}</span>`)
+                .join("");
+
             // Concatena o HTML de cada resultado à string 'resultados'
             resultados += `
                 <div class="item-resultado">
                     <h2>
-                     <a href="#" target="_blank">${dado.titulo}</a>
-                   </h2>
-                   <p class="descricao_meta">${dado.descricao}</p>
-                   <a href="${dado.link}" target="_blank">${dado.valoresMedios}</a>
-             </div>
+                        <a href="${linguagem.site}" target="_blank">${linguagem.nome}</a>
+                        <span class="ano">${linguagem.ano}</span>
+                    </h2>
+                    <div class="categorias">${tagsCategorias}</div>
+                    <p class="descricao-meta">${linguagem.descricao}</p>
+                    <div class="links">
+                        <a href="${linguagem.site}" target="_blank">Site oficial</a>
+                        <a href="${linguagem.documentacao}" target="_blank">Documentação</a>
+                        <a href="${linguagem.download}" target="_blank">Download</a>
+                    </div>
+                </div>
             `;
         }
     }
 
-    
-
     if (!resultados) {
-        resultados = "<p>Nada foi encontrado</p>"
+        resultados = "<p>Nada foi encontrado</p>";
     }
 
     // Atribui o HTML completo da lista de resultados à seção
     section.innerHTML = resultados;
 }
+
+// Permite pesquisar apertando Enter no campo de busca
+document.getElementById("campo-pesquisa").addEventListener("keydown", function (evento) {
+    if (evento.key === "Enter") {
+        pesquisar();
+    }
+});
+
+// Mostra todas as linguagens ao abrir a página
+pesquisar();

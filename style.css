@@ -8,10 +8,20 @@ body {
     display: flex; /* Usa Flexbox para layout */
     flex-direction: column; /* Alinha os itens na vertical */
     align-items: center; /* Centraliza os itens horizontalmente */
-    justify-content: center; /* Centraliza os itens verticalmente */
-    height: 100vh; /* Preenche a altura total da viewport */
+    min-height: 100vh; /* Ocupa pelo menos a altura da viewport */
     margin: 0;
     padding: 0;
+}
+
+/* Estiliza o cabeçalho */
+header {
+    text-align: center;
+    color: #0a172f;
+    padding: 0 1rem;
+}
+
+header p {
+    margin-top: 0;
 }
 
 /* Estiliza os títulos h1 */
@@ -21,27 +31,27 @@ h1 {
     text-align: center; /* Alinha o texto ao centro */
     letter-spacing: 0.4rem; /* Espaçamento entre letras */
 }
-.container {
-    text-align: center; /* Centraliza o conteúdo dentro do container */
-  }
-  
-  img {
-    width: 200px; /* Define a largura da imagem */
-    height: auto; /* Mantém a proporção da imagem */
-    margin-bottom: 20px; /* Adiciona um espaçamento abaixo da imagem */
-  }
+
+main {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
 
 /* Estiliza as seções da página */
 section {
     display: flex; /* Usa Flexbox para layout */
     flex-direction: column; /* Alinha os itens na vertical */
     align-items: center; /* Centraliza os itens horizontalmente */
-    margin-bottom: 3rem; /* Espaçamento abaixo de cada seção */
+    margin-bottom: 1rem; /* Espaçamento abaixo de cada seção */
+    width: 100%;
 }
 
 /* Estiliza os inputs dentro das seções */
 section input {
     width: 30rem; /* Largura dos inputs */
+    max-width: 90%; /* Não estoura em telas pequenas */
     border: none; /* Remove a borda padrão */
     padding: 1rem; /* Espaçamento interno */
     border-radius: 1.5rem; /* Borda arredondada */
@@ -65,11 +75,14 @@ section button {
 /* Estiliza a caixa de resultados da pesquisa */
 .resultados-pesquisa {
     width: 60rem; /* Largura máxima da caixa de resultados */
+    max-width: 100%; /* Não estoura em telas pequenas */
     height: 46vh; /* Altura máxima da caixa de resultados */
     overflow-y: auto; /* Adiciona rolagem vertical se necessário */
     margin-top: 1rem; /* Espaçamento acima da caixa de resultados */
     padding: 1rem; /* Espaçamento interno */
     border-radius: 0.6rem; /* Borda arredondada */
+    box-sizing: border-box;
+    align-items: stretch;
 }
 
 /* Estiliza cada item de resultado */
@@ -85,6 +98,7 @@ section button {
 .item-resultado h2 {
     font-size: 1.5rem; /* Tamanho da fonte */
     color: #222831; /* Cor do texto */
+    margin-top: 0;
 }
 
 /* Estiliza os links dentro dos itens de resultado */
@@ -98,10 +112,53 @@ section button {
     text-decoration: underline; /* Adiciona sublinhado ao passar o mouse */
 }
 
-/* Estiliza a descrição meta dentro dos itens de resultado */
+/* Ano de criação ao lado do nome */
+.ano {
+    font-size: 0.9rem;
+    font-weight: 400;
+    color: #45474B;
+    margin-left: 0.5rem;
+}
+
+/* Etiquetas de categoria */
+.categorias {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+}
+
+.categoria {
+    background-color: #081245;
+    color: #F5F7F8;
+    font-size: 0.8rem;
+    padding: 0.2rem 0.7rem;
+    border-radius: 1rem;
+}
+
+/* Estiliza a descrição dentro dos itens de resultado */
 .descricao-meta {
     color: #45474B; /* Cor do texto */
-    margin: 0.5rem 0; /* Margem acima e abaixo */
+    margin: 0.8rem 0; /* Margem acima e abaixo */
+}
+
+/* Links de site, documentação e download */
+.links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+}
+
+.item-resultado .links a {
+    border: 1px solid #081245;
+    border-radius: 1rem;
+    padding: 0.3rem 0.9rem;
+    font-size: 0.9rem;
+}
+
+.item-resultado .links a:hover {
+    background-color: #081245;
+    color: #F5F7F8;
+    text-decoration: none;
 }
 
 /* Estiliza o rodapé da página */
@@ -109,9 +166,11 @@ footer {
     background-color: #c5c550; /* Cor de fundo do rodapé */
     color: #45474B; /* Cor do texto */
     text-align: center; /* Alinha o texto ao centro */
-    padding: 0; /* Espaçamento interno */
     width: 100%; /* Largura total da página */
-    position: absolute; /* Posiciona o rodapé */
-    bottom: 0; /* Alinha ao fundo da página */
+    margin-top: auto; /* Empurra o rodapé para o fim da página */
     font-size: 1rem; /* Tamanho da fonte */
+}
+
+footer p {
+    margin: 0.5rem 0;
 }
