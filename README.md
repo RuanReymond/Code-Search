@@ -1,6 +1,6 @@
-# Code Seacher
+# Code Search
 
-Aplicação web para pesquisar e consultar linguagens de programação. O usuário digita um termo de busca e a aplicação exibe as linguagens correspondentes, com descrição, categorias, ano de criação e links para o site oficial, a documentação e a página de download.
+Aplicação web para pesquisar e explorar linguagens de programação. Digite um termo de busca ou selecione categorias para encontrar linguagens. Cada resultado inclui descrição, categorias, ano de criação e links para o site oficial, documentação e página de download.
 
 ## Funcionalidades
 
