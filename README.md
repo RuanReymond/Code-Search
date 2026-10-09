@@ -1,54 +1,123 @@
 # Code Search
 
-Aplicação web para pesquisar e explorar linguagens de programação. Digite um termo de busca ou selecione categorias para encontrar linguagens. Cada resultado inclui descrição, categorias, ano de criação e links para o site oficial, documentação e página de download.
+Aplicação web para pesquisar e explorar linguagens de programação. O frontend consome uma API própria (Node.js + Express) que retorna as linguagens com descrição, categorias, ano de criação e links para o site oficial, a documentação e a página de download.
 
 ## Funcionalidades
 
 - Busca por nome, descrição, categoria ou ano de criação.
 - Busca sem distinção de maiúsculas, minúsculas e acentos (por exemplo, `automacao` encontra `Automação`).
-- Listagem completa das linguagens ao abrir a página ou ao pesquisar com o campo vazio.
-- Exibição de categorias, ano de criação e links úteis em cada resultado.
+- Filtro por categorias, com painel recolhível e contador de filtros ativos.
+- Combinação de busca por termo e filtro de categorias.
 - Pesquisa pelo botão ou pela tecla Enter.
+- API REST com busca, filtro por categoria e consulta por slug.
 - Layout responsivo.
 
 ## Tecnologias
 
+**Frontend**
 - HTML5
 - CSS3
-- JavaScript (sem frameworks ou bibliotecas externas)
+- JavaScript (sem frameworks)
+
+**Backend**
+- Node.js
+- Express
+- CORS
+- dotenv
 
 ## Estrutura do projeto
 
 ```
 .
-├── index.html      # Estrutura da página
-├── style.css       # Estilos
-├── app.js          # Lógica de busca e renderização dos resultados
-├── linguagens.js   # Base de dados das linguagens
-└── README.md
+├── index.html            # Estrutura da página
+├── style.css             # Estilos
+├── app.js                # Interface: consome a API e exibe os resultados
+├── README.md
+├── .gitignore
+└── backend
+    ├── server.js         # API (Express)
+    ├── package.json
+    ├── package-lock.json
+    ├── .env.example      # Exemplo de variáveis de ambiente
+    └── data
+        └── languages.js  # Base de dados das linguagens
 ```
 
 ## Como executar
 
-1. Clone o repositório:
+### Pré-requisitos
 
-   ```bash
-   git clone <url-do-repositorio>
-   ```
+- [Node.js](https://nodejs.org/) 18 ou superior
 
-2. Acesse a pasta do projeto:
+### 1. Clone o repositório
 
-   ```bash
-   cd <nome-da-pasta>
-   ```
+```bash
+git clone https://github.com/RuanReymond/Code-Search.git
+cd Code-Search
+```
 
-3. Abra o arquivo `index.html` no navegador.
+### 2. Inicie o backend
 
-Não há dependências para instalar nem etapa de build.
+```bash
+cd backend
+npm install
+npm start
+```
+
+A API ficará disponível em `http://localhost:3000`. Para alterar a porta, copie o arquivo `.env.example` para `.env` e edite o valor de `PORT`.
+
+Durante o desenvolvimento, `npm run dev` reinicia o servidor automaticamente a cada alteração.
+
+### 3. Abra o frontend
+
+Com o servidor rodando, abra o arquivo `index.html` no navegador (ou use a extensão Live Server do VS Code).
+
+> O endereço da API fica na constante `API_URL`, no início do `app.js`. Se mudar a porta ou publicar o backend, atualize esse valor.
+
+## API
+
+Base: `http://localhost:3000`
+
+| Método | Rota                          | Descrição                                      |
+| ------ | ----------------------------- | ---------------------------------------------- |
+| GET    | `/`                           | Informações e lista de endpoints               |
+| GET    | `/api/languages`              | Lista todas as linguagens                      |
+| GET    | `/api/languages?search=termo` | Busca por nome, descrição, categoria ou ano    |
+| GET    | `/api/languages?categoria=Backend,IA` | Filtra por uma ou mais categorias      |
+| GET    | `/api/languages/:slug`        | Retorna uma linguagem pelo slug                |
+
+Os parâmetros `search` e `categoria` podem ser combinados. Exemplo:
+
+```
+GET /api/languages?search=java&categoria=Mobile
+```
+
+Resposta:
+
+```json
+{
+  "total": 2,
+  "data": [
+    {
+      "id": 2,
+      "nome": "JavaScript",
+      "slug": "javascript",
+      "descricao": "...",
+      "categoria": ["Frontend", "Backend", "Mobile"],
+      "ano": 1995,
+      "site": "https://developer.mozilla.org/pt-BR/docs/Web/JavaScript",
+      "documentacao": "https://developer.mozilla.org/pt-BR/docs/Web/JavaScript",
+      "download": "https://nodejs.org/pt/download"
+    }
+  ]
+}
+```
+
+Uma linguagem inexistente em `/api/languages/:slug` retorna status `404` com `{ "error": "Linguagem nao encontrada" }`.
 
 ## Como adicionar uma linguagem
 
-As linguagens ficam no array `linguagens`, no arquivo `linguagens.js`. Para incluir uma nova, adicione um objeto seguindo esta estrutura:
+As linguagens ficam em `backend/data/languages.js`. Para incluir uma nova, adicione um objeto ao array seguindo esta estrutura:
 
 ```js
 {
@@ -63,6 +132,8 @@ As linguagens ficam no array `linguagens`, no arquivo `linguagens.js`. Para incl
     download: "https://go.dev/dl/"
 }
 ```
+
+Reinicie o servidor para aplicar a alteração. Se usar uma categoria nova, adicione também o checkbox correspondente no painel de filtros do `index.html`.
 
 | Campo          | Tipo     | Descrição                                      |
 | -------------- | -------- | ---------------------------------------------- |

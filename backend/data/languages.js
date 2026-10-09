@@ -1,4 +1,5 @@
-let linguagens = [
+// Base de dados das linguagens (usada pela API em server.js)
+module.exports = [
     {
         id: 1,
         nome: "Python",
