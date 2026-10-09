@@ -4,7 +4,7 @@
 /* Estiliza o corpo da página */
 body {
     font-family: "Chakra Petch", sans-serif; /* Define a fonte padrão */
-    background-color: #6599f9; /* Cor de fundo da página */
+    background-color: #dcdc5a; /* Cor de fundo da página */
     display: flex; /* Usa Flexbox para layout */
     flex-direction: column; /* Alinha os itens na vertical */
     align-items: center; /* Centraliza os itens horizontalmente */
@@ -161,16 +161,53 @@ section button {
     text-decoration: none;
 }
 
+/* Seção de filtros */
+.filtro-section {
+    width: 100%;
+    background-color: rgba(255, 255, 255, 0.1);
+    padding: 1rem !important;
+    margin-bottom: 1rem !important;
+}
+
+.filtro-section h3 {
+    margin: 0 0 0.8rem 0;
+    color: #0a172f;
+    font-size: 1.1rem;
+}
+
+.filtros {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: center;
+}
+
+.filtro-label {
+    display: flex;
+    align-items: center;
+    color: #0a172f;
+    font-size: 0.95rem;
+    cursor: pointer;
+}
+
+.filtro-checkbox {
+    margin-right: 0.4rem;
+    cursor: pointer;
+    width: 18px;
+    height: 18px;
+}
+
 /* Estiliza o rodapé da página */
 footer {
-    background-color: #4b6ffd; /* Cor de fundo do rodapé */
+    background-color: #c5c550; /* Cor de fundo do rodapé */
     color: #45474B; /* Cor do texto */
     text-align: center; /* Alinha o texto ao centro */
     width: 100%; /* Largura total da página */
     margin-top: auto; /* Empurra o rodapé para o fim da página */
-    font-size: 1rem; /* Tamanho da fonte */
+    font-size: 0.85rem; /* Tamanho da fonte reduzido */
+    padding: 0.5rem 0; /* Padding reduzido */
 }
 
 footer p {
-    margin: 0.5rem 0;
+    margin: 0.2rem 0; /* Margem reduzida */
 }

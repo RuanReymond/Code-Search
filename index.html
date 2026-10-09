@@ -12,10 +12,24 @@
         <p>tudo o que você precisa saber sobre linguagens de programação</p>
     </header>
     <main>
-        <section>
+        <section class="pesquisa-section">
             <input type="text" placeholder="digite uma linguagem, categoria ou ano"
             id="campo-pesquisa">
             <button onclick="pesquisar()">Pesquisar</button>
+        </section>
+        <section class="filtro-section">
+            <h3>Filtrar por categoria:</h3>
+            <div class="filtros" id="filtros">
+                <label class="filtro-label"><input type="checkbox" value="Frontend" class="filtro-checkbox" onchange="pesquisar()"> Frontend</label>
+                <label class="filtro-label"><input type="checkbox" value="Backend" class="filtro-checkbox" onchange="pesquisar()"> Backend</label>
+                <label class="filtro-label"><input type="checkbox" value="Mobile" class="filtro-checkbox" onchange="pesquisar()"> Mobile</label>
+                <label class="filtro-label"><input type="checkbox" value="IA" class="filtro-checkbox" onchange="pesquisar()"> IA</label>
+                <label class="filtro-label"><input type="checkbox" value="Automacao" class="filtro-checkbox" onchange="pesquisar()"> Automação</label>
+                <label class="filtro-label"><input type="checkbox" value="Games" class="filtro-checkbox" onchange="pesquisar()"> Games</label>
+                <label class="filtro-label"><input type="checkbox" value="Desktop" class="filtro-checkbox" onchange="pesquisar()"> Desktop</label>
+                <label class="filtro-label"><input type="checkbox" value="Enterprise" class="filtro-checkbox" onchange="pesquisar()"> Enterprise</label>
+                <label class="filtro-label"><input type="checkbox" value="Web" class="filtro-checkbox" onchange="pesquisar()"> Web</label>
+            </div>
         </section>
         <section class="resultados-pesquisa"
         id="resultados-pesquisa">

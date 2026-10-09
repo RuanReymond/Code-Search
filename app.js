@@ -6,6 +6,16 @@ function normalizar(texto) {
         .replace(/[\u0300-\u036f]/g, "");
 }
 
+// Obtém os filtros de categoria selecionados
+function obterFiltrosCategoria() {
+    let checkboxes = document.querySelectorAll(".filtro-checkbox:checked");
+    let filtros = [];
+    checkboxes.forEach(checkbox => {
+        filtros.push(checkbox.value);
+    });
+    return filtros;
+}
+
 function pesquisar() {
 
     // Obtém a seção onde os resultados serão exibidos
@@ -15,6 +25,9 @@ function pesquisar() {
 
     // Se o campo estiver vazio, mostra todas as linguagens
     let termo = normalizar(campoPesquisa).trim();
+
+    // Obtém os filtros de categoria selecionados
+    let filtrosCategoria = obterFiltrosCategoria();
 
     // Inicializa uma string vazia para armazenar os resultados
     let resultados = "";
@@ -26,14 +39,20 @@ function pesquisar() {
         let categorias = normalizar(linguagem.categoria.join(" "));
         let ano = String(linguagem.ano);
 
-        // Se algum campo incluir o termo pesquisado
-        if (
+        // Verifica se a linguagem corresponde ao termo de busca
+        let correspondeTermo = 
             termo === "" ||
             nome.includes(termo) ||
             descricao.includes(termo) ||
             categorias.includes(termo) ||
-            ano.includes(termo)
-        ) {
+            ano.includes(termo);
+
+        // Verifica se a linguagem possui alguma das categorias filtradas
+        let correspondeCategoria = filtrosCategoria.length === 0 || 
+            filtrosCategoria.some(filtro => linguagem.categoria.includes(filtro));
+
+        // Se corresponder ao termo E às categorias
+        if (correspondeTermo && correspondeCategoria) {
             // Cria uma etiqueta para cada categoria
             let tagsCategorias = linguagem.categoria
                 .map(cat => `<span class="categoria">${cat}</span>`)
