@@ -16,6 +16,29 @@ function obterFiltrosCategoria() {
     return filtros;
 }
 
+// Abre ou fecha o painel de filtros
+function alternarFiltros() {
+    let painel = document.getElementById("filtro-painel");
+    let botao = document.getElementById("btn-filtro");
+
+    let aberto = painel.classList.toggle("aberto");
+    botao.classList.toggle("ativo", aberto);
+    botao.setAttribute("aria-expanded", aberto);
+}
+
+// Desmarca todos os filtros e atualiza os resultados
+function limparFiltros() {
+    document.querySelectorAll(".filtro-checkbox:checked").forEach(checkbox => {
+        checkbox.checked = false;
+    });
+    pesquisar();
+}
+
+// Mostra no botão quantos filtros estão marcados
+function atualizarContadorFiltros(quantidade) {
+    document.getElementById("contador-filtros").textContent = quantidade > 0 ? quantidade : "";
+}
+
 function pesquisar() {
 
     // Obtém a seção onde os resultados serão exibidos
@@ -28,6 +51,7 @@ function pesquisar() {
 
     // Obtém os filtros de categoria selecionados
     let filtrosCategoria = obterFiltrosCategoria();
+    atualizarContadorFiltros(filtrosCategoria.length);
 
     // Inicializa uma string vazia para armazenar os resultados
     let resultados = "";
