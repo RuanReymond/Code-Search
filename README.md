@@ -1,6 +1,6 @@
 # Code Search
 
-Aplicação web para pesquisar e explorar linguagens de programação. O frontend consome uma API própria (Node.js + Express) que retorna as linguagens com descrição, categorias, ano de criação e links para o site oficial, a documentação e a página de download.
+Aplicação web para pesquisar e explorar linguagens de programação. O frontend consome uma API própria (Node.js + Express) para exibir dados das linguagens e, na página de detalhes, estatísticas e projetos populares do GitHub.
 
 ## Funcionalidades
 
@@ -10,6 +10,8 @@ Aplicação web para pesquisar e explorar linguagens de programação. O fronten
 - Combinação de busca por termo e filtro de categorias.
 - Pesquisa pelo botão ou pela tecla Enter.
 - API REST com busca, filtro por categoria e consulta por slug.
+- Página de detalhes para cada linguagem, com projetos e estatísticas do GitHub.
+- Cache em memória das respostas do GitHub para reduzir chamadas e evitar atingir o limite da API.
 - Layout responsivo.
 
 ## Tecnologias
@@ -32,13 +34,17 @@ Aplicação web para pesquisar e explorar linguagens de programação. O fronten
 ├── index.html            # Estrutura da página
 ├── style.css             # Estilos
 ├── app.js                # Interface: consome a API e exibe os resultados
+├── comum.js              # URL da API e funções compartilhadas
+├── linguagem.html        # Página de detalhes da linguagem
+├── linguagem.js          # Carrega detalhes e projetos do GitHub
+├── detalhes.css          # Estilos da página de detalhes
 ├── README.md
 ├── .gitignore
+├── env.example           # Exemplo de configuração do backend
 └── backend
     ├── server.js         # API (Express)
     ├── package.json
     ├── package-lock.json
-    ├── .env.example      # Exemplo de variáveis de ambiente
     └── data
         └── languages.js  # Base de dados das linguagens
 ```
@@ -64,15 +70,22 @@ npm install
 npm start
 ```
 
-A API ficará disponível em `http://localhost:3000`. Para alterar a porta, copie o arquivo `.env.example` para `.env` e edite o valor de `PORT`.
+A API ficará disponível em `http://localhost:3000`. A porta padrão pode ser alterada pela variável `PORT`. Opcionalmente, configure `GITHUB_TOKEN` para autenticar as consultas à API do GitHub e ampliar o limite de requisições. Para isso, crie `backend/.env` a partir de `env.example` (por exemplo, no PowerShell, use `Copy-Item ..\env.example .env`) e adicione o token:
+
+```env
+PORT=3000
+GITHUB_TOKEN=seu_token
+```
+
+O token é opcional para desenvolvimento local. Não publique o token nem o arquivo `.env`.
 
 Durante o desenvolvimento, `npm run dev` reinicia o servidor automaticamente a cada alteração.
 
 ### 3. Abra o frontend
 
-Com o servidor rodando, abra o arquivo `index.html` no navegador (ou use a extensão Live Server do VS Code).
+Com o servidor rodando, abra `index.html` no navegador ou use a extensão Live Server do VS Code. A partir da busca, selecione uma linguagem para abrir sua página de detalhes e carregar os projetos do GitHub.
 
-> O endereço da API fica na constante `API_URL`, no início do `app.js`. Se mudar a porta ou publicar o backend, atualize esse valor.
+> O endereço da API fica na constante `API_URL`, em `comum.js`. Se mudar a porta ou publicar o backend, atualize esse valor. O GitHub Pages pode hospedar o frontend, mas a API Node.js precisa ser hospedada separadamente; configure `API_URL` com o endereço público da API.
 
 ## API
 
@@ -84,7 +97,16 @@ Base: `http://localhost:3000`
 | GET    | `/api/languages`              | Lista todas as linguagens                      |
 | GET    | `/api/languages?search=termo` | Busca por nome, descrição, categoria ou ano    |
 | GET    | `/api/languages?categoria=Backend,IA` | Filtra por uma ou mais categorias      |
-| GET    | `/api/languages/:slug`        | Retorna uma linguagem pelo slug                |
+| GET    | `/api/languages/:slug`        | Retorna os detalhes de uma linguagem pelo slug |
+| GET    | `/api/languages/:slug/github` | Retorna estatísticas e até 10 repositórios populares no GitHub |
+
+Exemplo de busca de repositórios Python:
+
+```
+GET /api/languages/python/github
+```
+
+A rota do GitHub aceita os slugs `python`, `javascript`, `java`, `typescript`, `csharp` e `php`.
 
 Os parâmetros `search` e `categoria` podem ser combinados. Exemplo:
 
@@ -113,7 +135,37 @@ Resposta:
 }
 ```
 
-Uma linguagem inexistente em `/api/languages/:slug` retorna status `404` com `{ "error": "Linguagem nao encontrada" }`.
+Uma linguagem inexistente em `/api/languages/:slug` retorna status `404` com `{ "error": "Linguagem nao encontrada" }`. A rota do GitHub retorna `404` se o slug não tiver mapeamento e `502` se não for possível consultar o GitHub. Se o limite de requisições do GitHub for atingido, a API retorna `429`.
+
+### Resposta do endpoint do GitHub
+
+`GET /api/languages/python/github` retorna os dez repositórios mais populares (ordenados por estrelas), além de estatísticas. `total` é a quantidade de repositórios na lista retornada; `stats.totalRepositories` é o total informado pela busca do GitHub. As contagens das estatísticas secundárias podem ser `null` se o GitHub não permitir essas consultas.
+
+```json
+{
+  "language": "Python",
+  "total": 10,
+  "stats": {
+    "totalRepositories": 123456,
+    "repositoriesOver1000Stars": 500,
+    "newRepositoriesLastYear": 12000
+  },
+  "searchUrl": "https://github.com/search?q=language%3APython&type=repositories&s=stars&o=desc",
+  "data": [
+    {
+      "name": "organizacao/projeto",
+      "description": "Descrição do projeto",
+      "stars": 50000,
+      "forks": 8000,
+      "url": "https://github.com/organizacao/projeto",
+      "language": "Python",
+      "updatedAt": "2026-10-01T12:00:00Z"
+    }
+  ]
+}
+```
+
+As respostas completas do GitHub ficam em cache por 30 minutos. Se alguma das consultas secundárias falhar, a resposta parcial fica em cache por 1 minuto.
 
 ## Como adicionar uma linguagem
 
@@ -133,7 +185,7 @@ As linguagens ficam em `backend/data/languages.js`. Para incluir uma nova, adici
 }
 ```
 
-Reinicie o servidor para aplicar a alteração. Se usar uma categoria nova, adicione também o checkbox correspondente no painel de filtros do `index.html`.
+Reinicie o servidor para aplicar a alteração. Se usar uma categoria nova, adicione também o checkbox correspondente no painel de filtros do `index.html`. Para habilitar a consulta do GitHub para uma linguagem nova, adicione o slug e o nome reconhecido pelo GitHub ao objeto `githubLanguageNames` em `backend/server.js`.
 
 | Campo          | Tipo     | Descrição                                      |
 | -------------- | -------- | ---------------------------------------------- |

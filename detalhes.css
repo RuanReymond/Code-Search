@@ -1,0 +1,145 @@
+/* Estilos da página de detalhes (linguagem.html). Usa também o style.css. */
+
+.detalhe {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    width: 60rem; /* Mesma largura da caixa de resultados */
+    max-width: 100%;
+    box-sizing: border-box;
+    padding: 0 1rem 1.5rem;
+}
+
+.voltar {
+    align-self: flex-start;
+    color: #081245;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.voltar:hover {
+    text-decoration: underline;
+}
+
+/* Blocos brancos, no mesmo estilo dos resultados da busca */
+.detalhe .card {
+    background: #FFFFFF;
+    border-radius: 0.6rem;
+    padding: 1.2rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.detalhe h2 {
+    margin: 0 0 0.6rem;
+    font-size: 2rem;
+    color: #222831;
+}
+
+.detalhe h3 {
+    margin: 1rem 0 0.6rem;
+    font-size: 1.2rem;
+    color: #222831;
+}
+
+.detalhe .card > h3:first-child {
+    margin-top: 0;
+}
+
+.detalhe .descricao {
+    color: #45474B;
+    line-height: 1.5;
+    margin: 0.8rem 0 1rem;
+}
+
+.detalhe .nota {
+    color: #45474B;
+    font-size: 0.85rem;
+    margin: 0.6rem 0 0;
+}
+
+/* Botões de site, documentação e download */
+.botoes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin-top: 1rem;
+}
+
+.btn-link {
+    display: inline-block;
+    padding: 0.6rem 1.2rem;
+    border: none;
+    border-radius: 1.5rem;
+    background-color: #081245;
+    color: #F5F7F8;
+    font-family: inherit;
+    font-size: 0.95rem;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.btn-link:hover {
+    background-color: #1a2a7a;
+}
+
+/* Números do GitHub */
+.estatisticas {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+    gap: 0.8rem;
+}
+
+.estatistica {
+    background-color: #F5F7F8;
+    border-radius: 0.6rem;
+    padding: 0.8rem;
+    text-align: center;
+}
+
+.estatistica strong {
+    display: block;
+    font-size: 1.5rem;
+    color: #081245;
+}
+
+.estatistica span {
+    font-size: 0.85rem;
+    color: #45474B;
+}
+
+/* Lista dos principais projetos */
+.repos {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.repo {
+    border-top: 1px solid #E3E6EA;
+    padding: 0.8rem 0;
+}
+
+.repo a {
+    color: #30475E;
+    font-weight: 600;
+    text-decoration: none;
+    word-break: break-word;
+}
+
+.repo a:hover {
+    text-decoration: underline;
+}
+
+.repo p {
+    margin: 0.3rem 0;
+    color: #45474B;
+    font-size: 0.95rem;
+}
+
+.repo-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem 1rem;
+    font-size: 0.85rem;
+    color: #45474B;
+}

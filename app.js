@@ -1,17 +1,5 @@
-// Endereço da API (backend). Para publicar o projeto, troque pelo endereço do servidor.
-const API_URL = "http://localhost:3000/api/languages";
-
 // Guarda a busca em andamento para cancelar quando começar outra
 let controladorBusca = null;
-
-// Evita que texto vindo da API seja interpretado como HTML
-function escapar(texto) {
-    return String(texto)
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;");
-}
 
 // Obtém os filtros de categoria selecionados
 function obterFiltrosCategoria() {
@@ -63,18 +51,22 @@ function exibirResultados(lista) {
             .map(cat => `<span class="categoria">${escapar(cat)}</span>`)
             .join("");
 
+        // Página de detalhes da linguagem
+        let paginaDetalhes = `linguagem.html?slug=${encodeURIComponent(linguagem.slug)}`;
+
         resultados += `
             <div class="item-resultado">
                 <h2>
-                    <a href="${escapar(linguagem.site)}" target="_blank">${escapar(linguagem.nome)}</a>
+                    <a href="${paginaDetalhes}">${escapar(linguagem.nome)}</a>
                     <span class="ano">${escapar(linguagem.ano)}</span>
                 </h2>
                 <div class="categorias">${tagsCategorias}</div>
                 <p class="descricao-meta">${escapar(linguagem.descricao)}</p>
                 <div class="links">
-                    <a href="${escapar(linguagem.site)}" target="_blank">Site oficial</a>
-                    <a href="${escapar(linguagem.documentacao)}" target="_blank">Documentação</a>
-                    <a href="${escapar(linguagem.download)}" target="_blank">Download</a>
+                    <a href="${escapar(linguagem.site)}" target="_blank" rel="noopener noreferrer">Site oficial</a>
+                    <a href="${escapar(linguagem.documentacao)}" target="_blank" rel="noopener noreferrer">Documentação</a>
+                    <a href="${escapar(linguagem.download)}" target="_blank" rel="noopener noreferrer">Download</a>
+                    <a href="${paginaDetalhes}">Projetos no GitHub</a>
                 </div>
             </div>
         `;
