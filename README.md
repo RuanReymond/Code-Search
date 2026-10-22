@@ -106,7 +106,7 @@ Exemplo de busca de repositórios Python:
 GET /api/languages/python/github
 ```
 
-A rota do GitHub aceita os slugs `python`, `javascript`, `java`, `typescript`, `csharp` e `php`.
+A rota do GitHub aceita as linguagens listadas em `backend/data/languages.js`. Bash é pesquisado pela categoria `Shell`, que é como o GitHub classifica essa linguagem.
 
 Os parâmetros `search` e `categoria` podem ser combinados. Exemplo:
 
@@ -201,7 +201,7 @@ Reinicie o servidor para aplicar a alteração. Se usar uma categoria nova, adic
 
 ## Linguagens incluídas
 
-Python, JavaScript, Java, C#, PHP e TypeScript.
+45 linguagens, incluindo Python, JavaScript, Java, C#, PHP, TypeScript, C, C++, Go, Rust, SQL, Bash e PowerShell.
 
 ## Contribuição
 
