@@ -33,6 +33,100 @@ app.get("/", (req, res) => {
   });
 });
 
+// ---------------------------------------------------------------------------
+// Busca de linguagens
+//
+// Cada linguagem recebe uma pontuação para o termo pesquisado (menor = mais
+// relevante) e os resultados saem ordenados por ela:
+//   0 a 3   -> nome ou slug (exato, começa com o termo, começa uma palavra, contém)
+//   10 e 11 -> categoria (exata, começa com o termo)
+//   20      -> palavra da descrição que começa com o termo
+//
+// Termos curtos são mais rígidos, para não trazer linguagens sem relação:
+//   1 letra  -> só o nome exato ou seguido de símbolo ("c" -> C, C++ e C#)
+//   2 letras -> nome que começa com o termo ou categoria exata ("go" -> Go, "ia" -> IA)
+//   3 ou +   -> nome, categoria e descrição
+// ---------------------------------------------------------------------------
+
+// Divide um texto em palavras ("visual basic .net" -> ["visual", "basic", "net"])
+function palavras(texto) {
+  return normalizar(texto).split(/[^a-z0-9]+/).filter(Boolean);
+}
+
+// Pontuação pelo nome e pelo slug (o slug permite buscar "cpp" ou "csharp")
+function pontuarNome(language, termo) {
+  let melhor = null;
+
+  for (const texto of [normalizar(language.nome), normalizar(language.slug)]) {
+    let pontos = null;
+
+    if (texto === termo) {
+      pontos = 0;
+    } else if (texto.startsWith(termo)) {
+      // Com 1 letra só vale se logo depois vier um símbolo: "c" -> C++ e C#, mas não COBOL
+      const proximo = texto[termo.length];
+      if (termo.length > 1 || !/[a-z0-9]/.test(proximo)) {
+        pontos = 1;
+      }
+    } else if (termo.length >= 3 && palavras(texto).some((p) => p.startsWith(termo))) {
+      pontos = 2;
+    } else if (termo.length >= 3 && texto.includes(termo)) {
+      pontos = 3;
+    }
+
+    if (pontos !== null && (melhor === null || pontos < melhor)) {
+      melhor = pontos;
+    }
+  }
+
+  return melhor;
+}
+
+// Pontuação pelas categorias
+function pontuarCategoria(language, termo) {
+  if (termo.length < 2) return null;
+
+  const categorias = language.categoria.map(normalizar);
+
+  if (categorias.includes(termo)) return 10;
+  if (termo.length >= 3 && categorias.some((cat) => cat.startsWith(termo))) return 11;
+  return null;
+}
+
+// Pontuação pela descrição (só para termos com 3 letras ou mais)
+function pontuarDescricao(language, termo) {
+  if (termo.length < 3) return null;
+
+  const texto = " " + normalizar(language.descricao).replace(/[^a-z0-9#+.]+/g, " ");
+  return texto.includes(" " + termo) ? 20 : null;
+}
+
+// Devolve as linguagens que correspondem ao termo, da mais para a menos relevante
+function buscarLinguagens(termo) {
+  if (termo === "") {
+    return languages;
+  }
+
+  // Só números: busca pelo ano de criação ("1995", "199")
+  if (/^\d+$/.test(termo)) {
+    return languages.filter((language) => String(language.ano).includes(termo));
+  }
+
+  return languages
+    .map((language) => {
+      const pontos = [
+        pontuarNome(language, termo),
+        pontuarCategoria(language, termo),
+        pontuarDescricao(language, termo)
+      ].filter((valor) => valor !== null);
+
+      return { language, pontos: pontos.length > 0 ? Math.min(...pontos) : null };
+    })
+    .filter((item) => item.pontos !== null)
+    .sort((a, b) => a.pontos - b.pontos || a.language.id - b.language.id)
+    .map((item) => item.language);
+}
+
 // Lista todas as linguagens, com busca por termo e/ou filtro de categorias
 app.get("/api/languages", (req, res) => {
   const search = normalizar(req.query.search || "");
@@ -43,20 +137,11 @@ app.get("/api/languages", (req, res) => {
     .map(normalizar)
     .filter(Boolean);
 
-  const results = languages.filter((language) => {
-    const correspondeBusca =
-      search === "" ||
-      normalizar(language.nome).includes(search) ||
-      normalizar(language.descricao).includes(search) ||
-      normalizar(language.categoria.join(" ")).includes(search) ||
-      String(language.ano).includes(search);
-
-    const correspondeCategoria =
+  const results = buscarLinguagens(search).filter(
+    (language) =>
       categorias.length === 0 ||
-      language.categoria.some((cat) => categorias.includes(normalizar(cat)));
-
-    return correspondeBusca && correspondeCategoria;
-  });
+      language.categoria.some((cat) => categorias.includes(normalizar(cat)))
+  );
 
   res.json({
     total: results.length,
