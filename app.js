@@ -55,20 +55,20 @@ function exibirResultados(lista) {
         let paginaDetalhes = `linguagem.html?slug=${encodeURIComponent(linguagem.slug)}`;
 
         resultados += `
-            <div class="item-resultado">
-                <h2>
-                    <a href="${paginaDetalhes}">${escapar(linguagem.nome)}</a>
-                    <span class="ano">${escapar(linguagem.ano)}</span>
-                </h2>
+            <article class="item-resultado">
+                <div class="item-topo">
+                    <h2><a href="${paginaDetalhes}">${escapar(linguagem.nome)}</a></h2>
+                    <span class="ano" title="Ano de criação">${escapar(linguagem.ano)}</span>
+                </div>
                 <div class="categorias">${tagsCategorias}</div>
                 <p class="descricao-meta">${escapar(linguagem.descricao)}</p>
                 <div class="links">
                     <a href="${escapar(linguagem.site)}" target="_blank" rel="noopener noreferrer">Site oficial</a>
                     <a href="${escapar(linguagem.documentacao)}" target="_blank" rel="noopener noreferrer">Documentação</a>
                     <a href="${escapar(linguagem.download)}" target="_blank" rel="noopener noreferrer">Download</a>
-                    <a href="${paginaDetalhes}">Projetos no GitHub</a>
                 </div>
-            </div>
+                <a class="ver-detalhes" href="${paginaDetalhes}">Ver detalhes</a>
+            </article>
         `;
     }
 

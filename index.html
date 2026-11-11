@@ -10,21 +10,20 @@
     <header>
         <h1>Code Search</h1>
         <p>encontre e explore linguagens de programação</p>
-    </header>
-    <main>
-        <section class="pesquisa-section">
-            <input type="text" placeholder="digite uma linguagem, categoria ou ano"
-            id="campo-pesquisa">
 
-            <div class="acoes">
+        <section class="pesquisa-section">
+            <div class="busca">
+                <input type="text" placeholder="digite uma linguagem, categoria ou ano"
+                id="campo-pesquisa" aria-label="Pesquisar linguagem">
                 <button type="button" onclick="pesquisar()">Pesquisar</button>
-                <button type="button" class="btn-filtro" id="btn-filtro"
-                    onclick="alternarFiltros()" aria-expanded="false" aria-controls="filtro-painel">
-                    Filtros
-                    <span class="contador-filtros" id="contador-filtros"></span>
-                    <span class="seta">▼</span>
-                </button>
             </div>
+
+            <button type="button" class="btn-filtro" id="btn-filtro"
+                onclick="alternarFiltros()" aria-expanded="false" aria-controls="filtro-painel">
+                Filtros
+                <span class="contador-filtros" id="contador-filtros"></span>
+                <span class="seta">▼</span>
+            </button>
 
             <div class="filtro-painel" id="filtro-painel">
                 <h3>Filtrar por categoria</h3>
@@ -47,7 +46,8 @@
                 <button type="button" class="btn-limpar" onclick="limparFiltros()">Limpar filtros</button>
             </div>
         </section>
-
+    </header>
+    <main>
         <section class="resultados-pesquisa"
         id="resultados-pesquisa">
         </section>

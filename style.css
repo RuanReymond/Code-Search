@@ -1,196 +1,162 @@
-/* Importa a fonte Chakra Petch do Google Fonts */
-@import url('https://fonts.googleapis.com/css2?family=Chakra+Petch:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap');
+/* Fontes: Chakra Petch (títulos, a mesma de antes) e IBM Plex Sans (textos) */
+@import url('https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap');
 
-/* Estiliza o corpo da página */
+/* Cores, largura e fontes do site. Para mudar o visual, altere aqui. */
+:root {
+    --tinta: #0c1633;        /* azul-marinho: cabeçalho, rodapé e textos */
+    --papel: #edf1f9;        /* fundo da página */
+    --branco: #ffffff;       /* cards e painel de filtros */
+    --azul: #2455d9;         /* links e destaques */
+    --amarelo: #ffd24a;      /* ação principal e filtros marcados */
+    --texto-suave: #4a5675;  /* descrições e textos de apoio */
+    --borda: #c5cfe6;        /* contorno dos cards e divisórias */
+    --etiqueta: #e4ebfa;     /* fundo das categorias */
+    --largura: 72rem;        /* largura máxima do conteúdo */
+    --fonte-titulo: "Chakra Petch", sans-serif;
+    --fonte-texto: "IBM Plex Sans", sans-serif;
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+/* A página inteira rola; o rodapé fica no fim mesmo com pouco conteúdo */
 body {
-    font-family: "Chakra Petch", sans-serif; /* Define a fonte padrão */
-    background-color: #6599f9; /* Cor de fundo da página */
-    display: flex; /* Usa Flexbox para layout */
-    flex-direction: column; /* Alinha os itens na vertical */
-    align-items: center; /* Centraliza os itens horizontalmente */
-    min-height: 100vh; /* Ocupa pelo menos a altura da viewport */
     margin: 0;
-    padding: 0;
-}
-
-/* Estiliza o cabeçalho */
-header {
-    text-align: center;
-    color: #0a172f;
-    padding: 0 1rem;
-}
-
-header p {
-    margin-top: 0;
-}
-
-/* Estiliza os títulos h1 */
-h1 {
-    font-size: 2.5rem; /* Tamanho da fonte */
-    color: #0a172f; /* Cor do texto */
-    text-align: center; /* Alinha o texto ao centro */
-    letter-spacing: 0.4rem; /* Espaçamento entre letras */
-}
-
-main {
-    width: 100%;
+    min-height: 100vh;
     display: flex;
     flex-direction: column;
-    align-items: center;
+    background-color: var(--papel);
+    color: var(--tinta);
+    font-family: var(--fonte-texto);
+    line-height: 1.5;
 }
 
-/* Estiliza as seções da página */
-section {
-    display: flex; /* Usa Flexbox para layout */
-    flex-direction: column; /* Alinha os itens na vertical */
-    align-items: center; /* Centraliza os itens horizontalmente */
-    margin-bottom: 1rem; /* Espaçamento abaixo de cada seção */
+h1,
+h2,
+h3 {
+    font-family: var(--fonte-titulo);
+    line-height: 1.2;
+}
+
+a {
+    color: var(--azul);
+}
+
+/* Foco visível para quem navega pelo teclado */
+:focus-visible {
+    outline: 3px solid var(--azul);
+    outline-offset: 2px;
+}
+
+header :focus-visible {
+    outline-color: var(--amarelo);
+}
+
+.filtro-painel :focus-visible {
+    outline-color: var(--azul);
+}
+
+/* Cabeçalho, conteúdo e rodapé usam a mesma margem lateral */
+header,
+main,
+footer {
+    padding-inline: max(1.25rem, calc((100% - var(--largura)) / 2));
+}
+
+/* ---------- Cabeçalho ---------- */
+header {
+    background-color: var(--tinta);
+    color: var(--branco);
+    padding-block: 2.5rem 2rem;
+}
+
+header h1 {
+    margin: 0 0 0.25rem;
+    font-size: clamp(2rem, 7vw, 3rem);
+    font-weight: 700;
+    letter-spacing: 0.15em;
+}
+
+header > p {
+    margin: 0 0 1.5rem;
+    color: #b9c4e2;
+    font-size: 1.05rem;
+}
+
+/* ---------- Busca ---------- */
+.pesquisa-section {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+}
+
+.busca {
+    display: flex;
     width: 100%;
+    max-width: 44rem;
 }
 
-/* Estiliza os inputs dentro das seções */
-section input {
-    width: 30rem; /* Largura dos inputs */
-    max-width: 90%; /* Não estoura em telas pequenas */
-    border: none; /* Remove a borda padrão */
-    padding: 1rem; /* Espaçamento interno */
-    border-radius: 1.5rem; /* Borda arredondada */
-    margin-bottom: 1rem; /* Espaçamento abaixo dos inputs */
-    color: #45474B; /* Cor do texto */
-    font-size: 1rem; /* Tamanho da fonte */
-    box-sizing: border-box; /* Inclui padding e border na largura total */
+.busca input {
+    flex: 1;
+    min-width: 0;
+    padding: 0.9rem 1.1rem;
+    border: 0;
+    border-radius: 8px 0 0 8px;
+    background-color: var(--branco);
+    color: var(--tinta);
+    font: inherit;
+    text-overflow: ellipsis;
 }
 
-/* Estiliza os botões dentro das seções */
-section button {
-    padding: 0.8rem 1.2rem; /* Espaçamento interno do botão */
-    border: none; /* Remove a borda padrão */
-    border-radius: 1.5rem; /* Borda arredondada */
-    background-color: #081245; /* Cor de fundo do botão */
-    color: #F5F7F8; /* Cor do texto do botão */
-    font-size: 1rem; /* Tamanho da fonte */
-    cursor: pointer; /* Muda o cursor para indicar que é clicável */
+.busca input::placeholder {
+    color: #6b7694;
 }
 
-/* Estiliza a caixa de resultados da pesquisa */
-.resultados-pesquisa {
-    width: 60rem; /* Largura máxima da caixa de resultados */
-    max-width: 100%; /* Não estoura em telas pequenas */
-    height: 46vh; /* Altura máxima da caixa de resultados */
-    overflow-y: auto; /* Adiciona rolagem vertical se necessário */
-    margin-top: 1rem; /* Espaçamento acima da caixa de resultados */
-    padding: 1rem; /* Espaçamento interno */
-    border-radius: 0.6rem; /* Borda arredondada */
-    box-sizing: border-box;
-    align-items: stretch;
+.busca button {
+    padding: 0 1.5rem;
+    border: 0;
+    border-radius: 0 8px 8px 0;
+    background-color: var(--amarelo);
+    color: var(--tinta);
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
 }
 
-/* Estiliza cada item de resultado */
-.item-resultado {
-    background: #FFFFFF; /* Cor de fundo dos itens */
-    border-radius: 0.6rem; /* Borda arredondada */
-    padding: 1rem; /* Espaçamento interno */
-    margin-bottom: 1rem; /* Espaçamento abaixo dos itens */
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Sombra leve */
+.busca button:hover {
+    background-color: #ffdf7a;
 }
 
-/* Estiliza os títulos dentro dos itens de resultado */
-.item-resultado h2 {
-    font-size: 1.5rem; /* Tamanho da fonte */
-    color: #222831; /* Cor do texto */
-    margin-top: 0;
-}
-
-/* Estiliza os links dentro dos itens de resultado */
-.item-resultado a {
-    text-decoration: none; /* Remove o sublinhado padrão dos links */
-    color: #30475E; /* Cor do texto dos links */
-}
-
-/* Estiliza os links quando são passados o mouse sobre */
-.item-resultado a:hover {
-    text-decoration: underline; /* Adiciona sublinhado ao passar o mouse */
-}
-
-/* Ano de criação ao lado do nome */
-.ano {
-    font-size: 0.9rem;
-    font-weight: 400;
-    color: #45474B;
-    margin-left: 0.5rem;
-}
-
-/* Etiquetas de categoria */
-.categorias {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.4rem;
-}
-
-.categoria {
-    background-color: #081245;
-    color: #F5F7F8;
-    font-size: 0.8rem;
-    padding: 0.2rem 0.7rem;
-    border-radius: 1rem;
-}
-
-/* Estiliza a descrição dentro dos itens de resultado */
-.descricao-meta {
-    color: #45474B; /* Cor do texto */
-    margin: 0.8rem 0; /* Margem acima e abaixo */
-}
-
-/* Links de site, documentação e download */
-.links {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.6rem;
-}
-
-.item-resultado .links a {
-    border: 1px solid #081245;
-    border-radius: 1rem;
-    padding: 0.3rem 0.9rem;
-    font-size: 0.9rem;
-}
-
-.item-resultado .links a:hover {
-    background-color: #081245;
-    color: #F5F7F8;
-    text-decoration: none;
-}
-
-/* Botões de ação abaixo da barra de pesquisa */
-.acoes {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.6rem;
-    justify-content: center;
-}
-
-/* Botão pequeno que abre/fecha os filtros */
-section .btn-filtro {
+/* ---------- Filtros ---------- */
+/* Botão pequeno que abre/fecha o painel */
+.btn-filtro {
     display: inline-flex;
     align-items: center;
-    gap: 0.4rem;
-    padding: 0.8rem 1.2rem;
-    font-family: inherit;
-    font-size: 1rem;
+    gap: 0.5rem;
+    padding: 0.45rem 0.9rem;
+    border: 1.5px solid #8f9cc2;
+    border-radius: 6px;
     background-color: transparent;
-    color: #081245;
-    border: 2px solid #081245;
-    transition: background-color 0.2s, color 0.2s;
+    color: var(--branco);
+    font: inherit;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
 }
 
-section .btn-filtro:hover,
-section .btn-filtro.ativo {
-    background-color: #081245;
-    color: #F5F7F8;
+.btn-filtro:hover,
+.btn-filtro.ativo {
+    border-color: var(--branco);
+    background-color: var(--branco);
+    color: var(--tinta);
 }
 
 .btn-filtro .seta {
-    font-size: 0.8rem;
+    font-size: 0.65rem;
     transition: transform 0.2s;
 }
 
@@ -198,44 +164,37 @@ section .btn-filtro.ativo {
     transform: rotate(180deg);
 }
 
-/* Contador de filtros ativos (aparece só quando há filtros marcados) */
+/* Número de filtros marcados (some quando não há nenhum) */
 .contador-filtros {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    min-width: 1.2rem;
-    height: 1.2rem;
-    padding: 0 0.2rem;
-    box-sizing: border-box;
-    border-radius: 1rem;
-    background-color: #081245;
-    color: #F5F7F8;
+    min-width: 1.25rem;
+    height: 1.25rem;
+    padding: 0 0.3rem;
+    border-radius: 10px;
+    background-color: var(--amarelo);
+    color: var(--tinta);
     font-size: 0.75rem;
+    font-weight: 600;
 }
 
 .contador-filtros:empty {
     display: none;
 }
 
-.btn-filtro:hover .contador-filtros,
-.btn-filtro.ativo .contador-filtros {
-    background-color: #F5F7F8;
-    color: #081245;
-}
-
-/* Painel de filtros (escondido até clicar no botão) */
+/* Painel de categorias (escondido até clicar em Filtros) */
 .filtro-painel {
     display: none;
     flex-direction: column;
-    align-items: center;
-    gap: 0.8rem;
-    width: 60rem;
-    max-width: 100%;
-    box-sizing: border-box;
-    margin-top: 0.8rem;
-    padding: 1rem;
-    background-color: rgba(255, 255, 255, 0.25);
-    border-radius: 0.8rem;
+    align-items: flex-start;
+    gap: 0.9rem;
+    width: 100%;
+    max-width: 44rem;
+    padding: 1.1rem 1.25rem;
+    border-radius: 10px;
+    background-color: var(--branco);
+    color: var(--tinta);
 }
 
 .filtro-painel.aberto {
@@ -257,17 +216,15 @@ section .btn-filtro.ativo {
 .filtro-painel h3 {
     margin: 0;
     font-size: 1rem;
-    color: #0a172f;
 }
 
 .filtros {
     display: flex;
     flex-wrap: wrap;
     gap: 0.5rem;
-    justify-content: center;
 }
 
-/* Cada categoria é uma "pílula" clicável */
+/* Cada categoria é um botão de marcar/desmarcar */
 .filtro-chip {
     cursor: pointer;
 }
@@ -278,54 +235,200 @@ section .btn-filtro.ativo {
     width: 0;
     height: 0;
     margin: 0;
-    padding: 0;
 }
 
 .filtro-chip span {
     display: inline-block;
-    padding: 0.3rem 0.9rem;
-    border: 2px solid #081245;
-    border-radius: 1rem;
-    color: #081245;
+    padding: 0.3rem 0.8rem;
+    border: 1.5px solid var(--tinta);
+    border-radius: 6px;
+    background-color: var(--branco);
     font-size: 0.9rem;
-    transition: background-color 0.2s, color 0.2s;
+    transition: background-color 0.15s;
 }
 
 .filtro-chip:hover span {
-    background-color: rgba(8, 18, 69, 0.12);
+    background-color: var(--papel);
 }
 
 .filtro-chip input:checked + span {
-    background-color: #081245;
-    color: #F5F7F8;
+    background-color: var(--amarelo);
 }
 
 .filtro-chip input:focus-visible + span {
-    outline: 2px solid #F5F7F8;
+    outline: 3px solid var(--azul);
     outline-offset: 2px;
 }
 
-/* Botão para limpar os filtros */
-section .btn-limpar {
-    padding: 0.2rem 0.8rem;
-    font-family: inherit;
-    font-size: 0.85rem;
-    background-color: transparent;
-    color: #081245;
+.btn-limpar {
+    padding: 0;
+    border: 0;
+    background: none;
+    color: var(--azul);
+    font: inherit;
+    font-size: 0.9rem;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+/* ---------- Resultados: 3 por linha ---------- */
+main {
+    flex: 1;
+    padding-block: 2rem 3rem;
+}
+
+.resultados-pesquisa {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1.25rem;
+}
+
+/* Mensagens ("Nada foi encontrado", erro da API) ocupam a linha toda */
+.resultados-pesquisa > p {
+    grid-column: 1 / -1;
+    margin: 0;
+    color: var(--texto-suave);
+}
+
+@media (max-width: 64rem) {
+    .resultados-pesquisa {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 40rem) {
+    .resultados-pesquisa {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Card de cada linguagem */
+.item-resultado {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    padding: 1.25rem;
+    border: 1px solid var(--borda);
+    border-radius: 8px;
+    background-color: var(--branco);
+}
+
+.item-resultado:hover {
+    border-color: var(--tinta);
+}
+
+.item-topo {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 0.75rem;
+}
+
+.item-resultado h2 {
+    margin: 0;
+    font-size: 1.4rem;
+    font-weight: 600;
+    overflow-wrap: anywhere;
+}
+
+.item-resultado h2 a {
+    color: var(--tinta);
+    text-decoration: none;
+}
+
+.item-resultado h2 a:hover {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+}
+
+/* Ano de criação */
+.ano {
+    color: var(--texto-suave);
+    font-size: 0.9rem;
+    font-variant-numeric: tabular-nums;
+}
+
+/* Categorias da linguagem */
+.categorias {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+}
+
+.categoria {
+    padding: 0.15rem 0.55rem;
+    border-radius: 4px;
+    background-color: var(--etiqueta);
+    color: #1b2a5e;
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+/* Descrição limitada a 4 linhas, para os cards ficarem alinhados */
+.descricao-meta {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 4;
+    line-clamp: 4;
+    margin: 0;
+    overflow: hidden;
+    color: var(--texto-suave);
+    font-size: 0.95rem;
+}
+
+/* Links externos, sempre no pé do card */
+.links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem 1rem;
+    margin-top: auto;
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--borda);
+    font-size: 0.9rem;
+}
+
+.links a {
+    font-weight: 500;
+    text-decoration: none;
+}
+
+.links a:hover {
     text-decoration: underline;
 }
 
-/* Estiliza o rodapé da página */
+.ver-detalhes {
+    display: block;
+    padding: 0.55rem;
+    border-radius: 6px;
+    background-color: var(--tinta);
+    color: var(--branco);
+    font-weight: 600;
+    text-align: center;
+    text-decoration: none;
+}
+
+.ver-detalhes:hover {
+    background-color: var(--azul);
+}
+
+/* ---------- Rodapé ---------- */
 footer {
-    background-color: #4b6ffd; /* Cor de fundo do rodapé */
-    color: #45474B; /* Cor do texto */
-    text-align: center; /* Alinha o texto ao centro */
-    width: 100%; /* Largura total da página */
-    margin-top: auto; /* Empurra o rodapé para o fim da página */
-    font-size: 0.85rem; /* Tamanho da fonte reduzido */
-    padding: 0.5rem 0; /* Espaçamento interno reduzido */
+    padding-block: 1.1rem;
+    background-color: var(--tinta);
+    color: #b9c4e2;
+    font-size: 0.85rem;
 }
 
 footer p {
-    margin: 0.2rem 0; /* Margem reduzida */
+    margin: 0.15rem 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .filtro-painel.aberto {
+        animation: none;
+    }
+
+    .btn-filtro .seta {
+        transition: none;
+    }
 }
