@@ -52,7 +52,7 @@ function exibirResultados(lista) {
             .join("");
 
         // Página de detalhes da linguagem
-        let paginaDetalhes = `linguagem.html?slug=${encodeURIComponent(linguagem.slug)}`;
+        let paginaDetalhes = `public/pages/linguagem.html?slug=${encodeURIComponent(linguagem.slug)}`;
 
         resultados += `
             <article class="item-resultado">

@@ -31,12 +31,12 @@ Aplicação web para pesquisar e explorar linguagens de programação. O fronten
 
 ```
 .
+├── index.html             # Página de busca (entrada do GitHub Pages)
 ├── README.md
 ├── .gitignore
 ├── env.example           # Exemplo de configuração do backend
 ├── public
 │   ├── pages
-│   │   ├── index.html     # Página de busca
 │   │   └── linguagem.html # Página de detalhes da linguagem
 │   ├── scripts
 │   │   ├── app.js         # Interface de busca
@@ -87,7 +87,7 @@ Durante o desenvolvimento, `npm run dev` reinicia o servidor automaticamente a c
 
 ### 3. Abra o frontend
 
-Com o servidor rodando, abra `public/pages/index.html` no navegador ou use a extensão Live Server do VS Code. A partir da busca, selecione uma linguagem para abrir sua página de detalhes e carregar os projetos do GitHub.
+Com o servidor rodando, abra `index.html` na raiz do projeto ou use a extensão Live Server do VS Code. A partir da busca, selecione uma linguagem para abrir sua página de detalhes e carregar os projetos do GitHub.
 
 > O endereço da API fica na constante `API_URL`, em `public/scripts/comum.js`. Se mudar a porta ou publicar o backend, atualize esse valor. O GitHub Pages pode hospedar o frontend, mas a API Node.js precisa ser hospedada separadamente; configure `API_URL` com o endereço público da API.
 
@@ -189,7 +189,7 @@ As linguagens ficam em `backend/data/languages.js`. Para incluir uma nova, adici
 }
 ```
 
-Reinicie o servidor para aplicar a alteração. Se usar uma categoria nova, adicione também o checkbox correspondente no painel de filtros do `index.html`. Para habilitar a consulta do GitHub para uma linguagem nova, adicione o slug e o nome reconhecido pelo GitHub ao objeto `githubLanguageNames` em `backend/server.js`.
+Reinicie o servidor para aplicar a alteração. Se usar uma categoria nova, adicione também o checkbox correspondente no painel de filtros do `index.html` na raiz. Para habilitar a consulta do GitHub para uma linguagem nova, adicione o slug e o nome reconhecido pelo GitHub ao objeto `githubLanguageNames` em `backend/server.js`.
 
 | Campo          | Tipo     | Descrição                                      |
 | -------------- | -------- | ---------------------------------------------- |
