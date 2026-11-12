@@ -98,6 +98,9 @@ function exibirErroGithub(mensagem) {
 }
 
 async function carregarLinguagem() {
+    // Se o servidor estiver acordando, avisa em vez de deixar "Carregando..." parado
+    let cancelarAviso = avisarSeDemorar(blocoInfo);
+
     try {
         let resposta = await fetch(`${API_URL}/${encodeURIComponent(slug)}`);
 
@@ -113,8 +116,10 @@ async function carregarLinguagem() {
         exibirLinguagem(await resposta.json());
     } catch (erro) {
         console.error(erro);
-        blocoInfo.innerHTML = "<p>Não foi possível carregar a linguagem. Verifique se o servidor está rodando (<code>npm start</code> na pasta backend).</p>";
+        blocoInfo.innerHTML = mensagemErroApi("a linguagem");
         blocoGithub.style.display = "none";
+    } finally {
+        cancelarAviso();
     }
 }
 

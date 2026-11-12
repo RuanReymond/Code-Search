@@ -52,7 +52,7 @@ function exibirResultados(lista) {
             .join("");
 
         // Página de detalhes da linguagem
-        let paginaDetalhes = `public/pages/linguagem.html?slug=${encodeURIComponent(linguagem.slug)}`;
+        let paginaDetalhes = `linguagem.html?slug=${encodeURIComponent(linguagem.slug)}`;
 
         resultados += `
             <article class="item-resultado">
@@ -98,6 +98,9 @@ async function pesquisar() {
     }
     controladorBusca = new AbortController();
 
+    // Se o servidor estiver acordando, avisa em vez de deixar a tela vazia
+    let cancelarAviso = avisarSeDemorar(section);
+
     try {
         let resposta = await fetch(`${API_URL}?${parametros}`, {
             signal: controladorBusca.signal
@@ -115,7 +118,9 @@ async function pesquisar() {
             return;
         }
         console.error(erro);
-        section.innerHTML = "<p>Não foi possível carregar as linguagens. Verifique se o servidor está rodando (<code>npm start</code> na pasta backend).</p>";
+        section.innerHTML = mensagemErroApi("as linguagens");
+    } finally {
+        cancelarAviso();
     }
 }
 

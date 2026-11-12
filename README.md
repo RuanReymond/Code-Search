@@ -26,31 +26,38 @@ Aplicação web para pesquisar e explorar linguagens de programação. O fronten
 - Express
 - CORS
 - dotenv
+- PostgreSQL (hospedado no Neon), com o driver `pg`
+
+**Hospedagem (planos gratuitos)**
+- GitHub Pages: frontend
+- Render: API
+- Neon: banco de dados
 
 ## Estrutura do projeto
 
 ```
 .
-├── index.html             # Página de busca (entrada do GitHub Pages)
+├── index.html            # Estrutura da página
+├── style.css             # Estilos
+├── app.js                # Interface: consome a API e exibe os resultados
+├── comum.js              # URL da API e funções compartilhadas
+├── linguagem.html        # Página de detalhes da linguagem
+├── linguagem.js          # Carrega detalhes e projetos do GitHub
+├── detalhes.css          # Estilos da página de detalhes
 ├── README.md
 ├── .gitignore
 ├── env.example           # Exemplo de configuração do backend
-├── public
-│   ├── pages
-│   │   └── linguagem.html # Página de detalhes da linguagem
-│   ├── scripts
-│   │   ├── app.js         # Interface de busca
-│   │   ├── comum.js       # URL da API e funções compartilhadas
-│   │   └── linguagem.js   # Detalhes e projetos do GitHub
-│   └── styles
-│       ├── style.css     # Estilos gerais
-│       └── detalhes.css  # Estilos da página de detalhes
 └── backend
     ├── server.js         # API (Express)
+    ├── db.js             # Conexão com o banco e cache das linguagens
     ├── package.json
     ├── package-lock.json
+    ├── scripts
+    │   ├── schema.sql            # Criação das tabelas
+    │   ├── seed.js               # Copia as linguagens do languages.js para o banco
+    │   └── usuario-leitura.sql   # Usuário somente leitura para a API
     └── data
-        └── languages.js  # Base de dados das linguagens
+        └── languages.js  # Dados originais (usados para popular o banco)
 ```
 
 ## Como executar
@@ -66,32 +73,86 @@ git clone https://github.com/RuanReymond/Code-Search.git
 cd Code-Search
 ```
 
-### 2. Inicie o backend
+### 2. Configure o banco de dados
 
-Na raiz do projeto, instale as dependências e inicie a API:
+A API lê as linguagens de um banco PostgreSQL na nuvem (Neon). Crie o banco seguindo a seção [Banco de dados e publicação](#banco-de-dados-e-publicação), copie o endereço de conexão e salve em `backend/.env` (veja o `env.example`).
+
+Com o `.env` pronto, crie as tabelas e envie as linguagens ao banco (uma única vez):
 
 ```bash
+cd backend
+npm install
+npm run seed
+```
+
+### 3. Inicie o backend
+
+```bash
+cd backend
+npm install
 npm start
 ```
 
-Se as dependências ainda não estiverem instaladas, execute `npm run install:backend` antes. No PowerShell do Windows, se `npm` for bloqueado pela política de execução, use `npm.cmd` no lugar (por exemplo, `npm.cmd start`). Também é possível executar os comandos diretamente dentro da pasta `backend`.
-
-A API ficará disponível em `http://localhost:3000`. A porta padrão pode ser alterada pela variável `PORT`. Opcionalmente, configure `GITHUB_TOKEN` para autenticar as consultas à API do GitHub e ampliar o limite de requisições. Para isso, crie `backend/.env` a partir de `env.example` (por exemplo, no PowerShell, use `Copy-Item env.example backend/.env`) e adicione o token:
+A API ficará disponível em `http://localhost:3000`. Para configurá-la, crie `backend/.env` a partir de `env.example` (por exemplo, no PowerShell, use `Copy-Item ..\env.example .env`):
 
 ```env
 PORT=3000
-GITHUB_TOKEN=seu_token
+DATABASE_URL=postgresql://usuario:senha@host/banco?sslmode=require
+FRONTEND_URL=
+GITHUB_TOKEN=
 ```
 
-O token é opcional para desenvolvimento local. Não publique o token nem o arquivo `.env`.
+| Variável       | Descrição                                                                                         |
+| -------------- | ------------------------------------------------------------------------------------------------- |
+| `PORT`         | Porta da API (padrão: `3000`; no Render é definida automaticamente)                               |
+| `DATABASE_URL` | Endereço de conexão do banco no Neon (obrigatório)                                                |
+| `FRONTEND_URL` | Sites autorizados a usar a API, separados por vírgula e sem barra no final. Vazio em desenvolvimento |
+| `GITHUB_TOKEN` | Opcional. Autentica as consultas ao GitHub e amplia o limite de requisições                       |
 
-Durante o desenvolvimento, `npm run dev` (ou `npm.cmd run dev` no PowerShell) reinicia o servidor automaticamente a cada alteração.
+Não publique o arquivo `.env` nem o token.
 
-### 3. Abra o frontend
+Durante o desenvolvimento, `npm run dev` reinicia o servidor automaticamente a cada alteração.
 
-Com o servidor rodando, abra `index.html` na raiz do projeto ou use a extensão Live Server do VS Code. A partir da busca, selecione uma linguagem para abrir sua página de detalhes e carregar os projetos do GitHub.
+### 4. Abra o frontend
 
-> O endereço da API fica na constante `API_URL`, em `public/scripts/comum.js`. Se mudar a porta ou publicar o backend, atualize esse valor. O GitHub Pages pode hospedar o frontend, mas a API Node.js precisa ser hospedada separadamente; configure `API_URL` com o endereço público da API.
+Com o servidor rodando, abra `index.html` no navegador ou use a extensão Live Server do VS Code. A partir da busca, selecione uma linguagem para abrir sua página de detalhes e carregar os projetos do GitHub.
+
+> No computador (localhost) o frontend usa a API local. No site publicado ele usa o endereço definido em `API_PUBLICA`, no `comum.js`, que deve apontar para a API no Render.
+
+## Banco de dados e publicação
+
+O frontend fica no GitHub Pages, a API Express no [Render](https://render.com) e as linguagens em um banco PostgreSQL no [Neon](https://neon.com), todos em planos gratuitos.
+
+```
+GitHub Pages (frontend)  ->  Render (API)  ->  Neon (PostgreSQL)
+```
+
+### Tabelas
+
+- `linguagens`: nome, slug, descrição, ano e links.
+- `categorias`: lista de categorias.
+- `linguagem_categoria`: liga linguagens a categorias (muitos para muitos) e guarda a ordem em que aparecem.
+
+A criação está em `backend/scripts/schema.sql`. A API carrega as linguagens do banco, guarda o resultado em memória por 10 minutos e, se o banco ficar indisponível, continua respondendo com os últimos dados conhecidos.
+
+### 1. Banco no Neon
+
+1. Crie uma conta e um projeto no Neon, escolhendo a região mais próxima.
+2. No painel, abra a opção de conexão (*Connect*) e copie o endereço de conexão. Ele é uma senha: guarde apenas em `backend/.env` e nas variáveis do Render.
+3. Em `backend`, rode `npm run seed` para criar as tabelas e enviar as linguagens.
+4. No editor SQL do Neon, execute `backend/scripts/usuario-leitura.sql` (trocando a senha). Esse usuário só consegue ler os dados e é o que a API usa em produção. O endereço de conexão dele é igual ao do dono, trocando usuário e senha.
+
+### 2. API no Render
+
+1. Crie um *Web Service* a partir do repositório do GitHub.
+2. Configure: **Root Directory** `backend`, **Build Command** `npm install`, **Start Command** `npm start`, **Instance Type** `Free` e **Health Check Path** `/health`.
+3. Em *Environment*, adicione `DATABASE_URL` (do usuário somente leitura) e `FRONTEND_URL` (`https://ruanreymond.github.io`). Adicione também `GITHUB_TOKEN`, se quiser.
+4. Copie o endereço do serviço (`https://seu-servico.onrender.com`) e coloque em `API_PUBLICA`, no `comum.js`, terminando com `/api/languages`.
+
+### Observações sobre os planos gratuitos
+
+- A API "dorme" após alguns minutos sem acessos e leva cerca de 1 minuto para acordar. O site mostra um aviso nesse caso.
+- Os limites e as regras dos planos mudam; confira nas páginas oficiais do Neon e do Render.
 
 ## API
 
@@ -175,7 +236,7 @@ As respostas completas do GitHub ficam em cache por 30 minutos. Se alguma das co
 
 ## Como adicionar uma linguagem
 
-As linguagens ficam em `backend/data/languages.js`. Para incluir uma nova, adicione um objeto ao array seguindo esta estrutura:
+As linguagens ficam no banco de dados. O arquivo `backend/data/languages.js` é a fonte usada para popular o banco: para incluir uma nova, adicione um objeto ao array seguindo esta estrutura:
 
 ```js
 {
@@ -191,7 +252,7 @@ As linguagens ficam em `backend/data/languages.js`. Para incluir uma nova, adici
 }
 ```
 
-Reinicie o servidor para aplicar a alteração. Se usar uma categoria nova, adicione também o checkbox correspondente no painel de filtros do `index.html` na raiz. Para habilitar a consulta do GitHub para uma linguagem nova, adicione o slug e o nome reconhecido pelo GitHub ao objeto `githubLanguageNames` em `backend/server.js`.
+Depois rode `npm run seed` (com o `DATABASE_URL` do dono do banco) para enviar a alteração ao banco. A API atualiza em até 10 minutos, ou imediatamente se o servidor for reiniciado. Se usar uma categoria nova, adicione também o checkbox correspondente no painel de filtros do `index.html`. Para habilitar a consulta do GitHub para uma linguagem nova, adicione o slug e o nome reconhecido pelo GitHub ao objeto `githubLanguageNames` em `backend/server.js`.
 
 | Campo          | Tipo     | Descrição                                      |
 | -------------- | -------- | ---------------------------------------------- |

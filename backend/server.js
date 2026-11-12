@@ -1,12 +1,20 @@
 require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
-const languages = require("./data/languages");
+const { obterLinguagens } = require("./db");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-app.use(cors());
+// FRONTEND_URL: endereços do site que podem usar a API, separados por vírgula
+// (ex.: https://ruanreymond.github.io, sem barra no final).
+// Se não for definida (desenvolvimento local), qualquer origem é aceita.
+const origensPermitidas = (process.env.FRONTEND_URL || "")
+  .split(",")
+  .map((origem) => origem.trim())
+  .filter(Boolean);
+
+app.use(cors(origensPermitidas.length > 0 ? { origin: origensPermitidas } : {}));
 app.use(express.json());
 
 // Remove acentos e deixa em minúsculas (assim "automacao" encontra "Automação")
@@ -17,6 +25,20 @@ function normalizar(texto) {
     .replace(/[\u0300-\u036f]/g, "")
     .trim();
 }
+
+// Resposta padrão quando o banco de dados não responde
+function erroBanco(res, erro) {
+  console.error("Erro no banco de dados:", erro.message);
+
+  res.status(503).json({
+    error: "Banco de dados indisponivel no momento. Tente novamente em instantes."
+  });
+}
+
+// Verificação de saúde do servidor (não consulta o banco)
+app.get("/health", (req, res) => {
+  res.json({ status: "ok" });
+});
 
 // Rota inicial
 app.get("/", (req, res) => {
@@ -102,7 +124,7 @@ function pontuarDescricao(language, termo) {
 }
 
 // Devolve as linguagens que correspondem ao termo, da mais para a menos relevante
-function buscarLinguagens(termo) {
+function buscarLinguagens(languages, termo) {
   if (termo === "") {
     return languages;
   }
@@ -128,7 +150,7 @@ function buscarLinguagens(termo) {
 }
 
 // Lista todas as linguagens, com busca por termo e/ou filtro de categorias
-app.get("/api/languages", (req, res) => {
+app.get("/api/languages", async (req, res) => {
   const search = normalizar(req.query.search || "");
 
   // categoria=Backend,IA -> ["backend", "ia"]
@@ -137,7 +159,14 @@ app.get("/api/languages", (req, res) => {
     .map(normalizar)
     .filter(Boolean);
 
-  const results = buscarLinguagens(search).filter(
+  let languages;
+  try {
+    languages = await obterLinguagens();
+  } catch (erro) {
+    return erroBanco(res, erro);
+  }
+
+  const results = buscarLinguagens(languages, search).filter(
     (language) =>
       categorias.length === 0 ||
       language.categoria.some((cat) => categorias.includes(normalizar(cat)))
@@ -150,7 +179,14 @@ app.get("/api/languages", (req, res) => {
 });
 
 // Busca uma linguagem pelo slug
-app.get("/api/languages/:slug", (req, res) => {
+app.get("/api/languages/:slug", async (req, res) => {
+  let languages;
+  try {
+    languages = await obterLinguagens();
+  } catch (erro) {
+    return erroBanco(res, erro);
+  }
+
   const language = languages.find(
     (item) => item.slug === req.params.slug.toLowerCase()
   );
@@ -351,5 +387,12 @@ app.use((req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`API rodando em http://localhost:${PORT}`);
+  console.log(`API rodando na porta ${PORT}`);
+
+  // Consulta o banco logo ao iniciar: acorda o Neon e deixa o cache pronto
+  obterLinguagens()
+    .then((lista) => console.log(`${lista.length} linguagens carregadas do banco`))
+    .catch((erro) =>
+      console.error("Nao foi possivel carregar as linguagens do banco:", erro.message)
+    );
 });
