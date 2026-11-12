@@ -68,13 +68,15 @@ cd Code-Search
 
 ### 2. Inicie o backend
 
+Na raiz do projeto, instale as dependências e inicie a API:
+
 ```bash
-cd backend
-npm install
 npm start
 ```
 
-A API ficará disponível em `http://localhost:3000`. A porta padrão pode ser alterada pela variável `PORT`. Opcionalmente, configure `GITHUB_TOKEN` para autenticar as consultas à API do GitHub e ampliar o limite de requisições. Para isso, crie `backend/.env` a partir de `env.example` (por exemplo, no PowerShell, use `Copy-Item ..\env.example .env`) e adicione o token:
+Se as dependências ainda não estiverem instaladas, execute `npm run install:backend` antes. No PowerShell do Windows, se `npm` for bloqueado pela política de execução, use `npm.cmd` no lugar (por exemplo, `npm.cmd start`). Também é possível executar os comandos diretamente dentro da pasta `backend`.
+
+A API ficará disponível em `http://localhost:3000`. A porta padrão pode ser alterada pela variável `PORT`. Opcionalmente, configure `GITHUB_TOKEN` para autenticar as consultas à API do GitHub e ampliar o limite de requisições. Para isso, crie `backend/.env` a partir de `env.example` (por exemplo, no PowerShell, use `Copy-Item env.example backend/.env`) e adicione o token:
 
 ```env
 PORT=3000
@@ -83,7 +85,7 @@ GITHUB_TOKEN=seu_token
 
 O token é opcional para desenvolvimento local. Não publique o token nem o arquivo `.env`.
 
-Durante o desenvolvimento, `npm run dev` reinicia o servidor automaticamente a cada alteração.
+Durante o desenvolvimento, `npm run dev` (ou `npm.cmd run dev` no PowerShell) reinicia o servidor automaticamente a cada alteração.
 
 ### 3. Abra o frontend
 
