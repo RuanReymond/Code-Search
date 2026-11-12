@@ -31,16 +31,20 @@ Aplicação web para pesquisar e explorar linguagens de programação. O fronten
 
 ```
 .
-├── index.html            # Estrutura da página
-├── style.css             # Estilos
-├── app.js                # Interface: consome a API e exibe os resultados
-├── comum.js              # URL da API e funções compartilhadas
-├── linguagem.html        # Página de detalhes da linguagem
-├── linguagem.js          # Carrega detalhes e projetos do GitHub
-├── detalhes.css          # Estilos da página de detalhes
 ├── README.md
 ├── .gitignore
 ├── env.example           # Exemplo de configuração do backend
+├── public
+│   ├── pages
+│   │   ├── index.html     # Página de busca
+│   │   └── linguagem.html # Página de detalhes da linguagem
+│   ├── scripts
+│   │   ├── app.js         # Interface de busca
+│   │   ├── comum.js       # URL da API e funções compartilhadas
+│   │   └── linguagem.js   # Detalhes e projetos do GitHub
+│   └── styles
+│       ├── style.css     # Estilos gerais
+│       └── detalhes.css  # Estilos da página de detalhes
 └── backend
     ├── server.js         # API (Express)
     ├── package.json
@@ -83,9 +87,9 @@ Durante o desenvolvimento, `npm run dev` reinicia o servidor automaticamente a c
 
 ### 3. Abra o frontend
 
-Com o servidor rodando, abra `index.html` no navegador ou use a extensão Live Server do VS Code. A partir da busca, selecione uma linguagem para abrir sua página de detalhes e carregar os projetos do GitHub.
+Com o servidor rodando, abra `public/pages/index.html` no navegador ou use a extensão Live Server do VS Code. A partir da busca, selecione uma linguagem para abrir sua página de detalhes e carregar os projetos do GitHub.
 
-> O endereço da API fica na constante `API_URL`, em `comum.js`. Se mudar a porta ou publicar o backend, atualize esse valor. O GitHub Pages pode hospedar o frontend, mas a API Node.js precisa ser hospedada separadamente; configure `API_URL` com o endereço público da API.
+> O endereço da API fica na constante `API_URL`, em `public/scripts/comum.js`. Se mudar a porta ou publicar o backend, atualize esse valor. O GitHub Pages pode hospedar o frontend, mas a API Node.js precisa ser hospedada separadamente; configure `API_URL` com o endereço público da API.
 
 ## API
 
