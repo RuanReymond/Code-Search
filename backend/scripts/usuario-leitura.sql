@@ -2,7 +2,7 @@
 -- Execute no editor SQL do Neon, trocando a senha antes.
 -- NÃO salve a senha real neste arquivo nem envie ao GitHub.
 
-CREATE ROLE api_leitura WITH LOGIN PASSWORD 'TROQUE_ESTA_SENHA';
+CREATE ROLE api_leitura WITH LOGIN PASSWORD 'Reymond123';
 GRANT USAGE ON SCHEMA public TO api_leitura;
 GRANT SELECT ON ALL TABLES IN SCHEMA public TO api_leitura;
 
