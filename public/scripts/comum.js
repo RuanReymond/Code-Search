@@ -3,7 +3,7 @@
 // - No site publicado usa a API hospedada no Render: troque o endereço abaixo
 //   pelo do seu serviço (termina com /api/languages).
 const API_LOCAL = "http://localhost:3000/api/languages";
-const API_PUBLICA = "https://SEU-SERVICO.onrender.com/api/languages";
+const API_PUBLICA = "https://code-search-ohp9.onrender.com/api/languages";
 
 const rodandoLocal = ["localhost", "127.0.0.1", ""].includes(window.location.hostname);
 const API_URL = rodandoLocal ? API_LOCAL : API_PUBLICA;
