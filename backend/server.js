@@ -386,13 +386,21 @@ app.use((req, res) => {
   });
 });
 
-app.listen(PORT, () => {
-  console.log(`API rodando na porta ${PORT}`);
+if (require.main === module) {
+    app.listen(PORT, () => {
+        console.log(`API rodando na porta ${PORT}`);
 
-  // Consulta o banco logo ao iniciar: acorda o Neon e deixa o cache pronto
-  obterLinguagens()
-    .then((lista) => console.log(`${lista.length} linguagens carregadas do banco`))
-    .catch((erro) =>
-      console.error("Nao foi possivel carregar as linguagens do banco:", erro.message)
-    );
-});
+        obterLinguagens()
+            .then((lista) => {
+                console.log(`${lista.length} linguagens carregadas do banco`);
+            })
+            .catch((erro) => {
+                console.error(
+                    "Nao foi possivel carregar as linguagens do banco:",
+                    erro.message
+                );
+            });
+    });
+}
+
+module.exports = app;

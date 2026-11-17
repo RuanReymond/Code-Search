@@ -28,56 +28,52 @@ Aplicação web para pesquisar e explorar linguagens de programação. O fronten
 - dotenv
 - PostgreSQL (hospedado no Neon), com o driver `pg`
 
-**Hospedagem (planos gratuitos)**
-- GitHub Pages: frontend
-- Render: API
-- Neon: banco de dados
+**Hospedagem**
+- Vercel: frontend estático e API serverless
+- Neon: banco de dados PostgreSQL
 
 ## Estrutura do projeto
 
 ```
 .
-├── index.html            # Estrutura da página
-├── style.css             # Estilos
-├── app.js                # Interface: consome a API e exibe os resultados
-├── comum.js              # URL da API e funções compartilhadas
-├── linguagem.html        # Página de detalhes da linguagem
-├── linguagem.js          # Carrega detalhes e projetos do GitHub
-├── detalhes.css          # Estilos da página de detalhes
-├── README.md
-├── .gitignore
-├── env.example           # Exemplo de configuração do backend
-└── backend
-    ├── server.js         # API (Express)
-    ├── db.js             # Conexão com o banco e cache das linguagens
-    ├── package.json
-    ├── package-lock.json
-    ├── scripts
-    │   ├── schema.sql            # Criação das tabelas
-    │   ├── seed.js               # Copia as linguagens do languages.js para o banco
-    │   └── usuario-leitura.sql   # Usuário somente leitura para a API
-    └── data
-        └── languages.js  # Dados originais (usados para popular o banco)
+├── api/
+│   └── [...path].js             # Entrada serverless do Vercel
+├── backend/
+│   ├── data/languages.js        # Dados usados pelo seed
+│   ├── db.js                    # Conexao PostgreSQL e cache
+│   ├── server.js                # API Express
+│   ├── package.json
+│   └── scripts/
+│       ├── schema.sql
+│       ├── seed.js
+│       └── usuario-leitura.sql
+├── public/
+│   ├── pages/linguagem.html
+│   ├── scripts/
+│   └── styles/
+├── scripts/build.js             # Copia index.html para a pasta publicada
+├── index.html                   # Pagina inicial fonte
+├── package.json
+├── vercel.json
+├── env.example
+└── .gitignore
 ```
 
-## Como executar
+## Como executar localmente
 
-### Pré-requisitos
+### 1. Configure o banco de dados
 
-- [Node.js](https://nodejs.org/) 18 ou superior
+Crie um projeto PostgreSQL no Neon. Para preparar o banco, use a connection string da role proprietária (`neondb_owner`) no arquivo `backend/.env`:
 
-### 1. Clone o repositório
-
-```bash
-git clone https://github.com/RuanReymond/Code-Search.git
-cd Code-Search
+```env
+DATABASE_URL=postgresql://USUARIO:SENHA@HOST/NEONDB?sslmode=require
+GITHUB_TOKEN=
+PORT=3000
 ```
 
-### 2. Configure o banco de dados
+Não publique o arquivo `backend/.env` nem compartilhe sua connection string.
 
-A API lê as linguagens de um banco PostgreSQL na nuvem (Neon). Crie o banco seguindo a seção [Banco de dados e publicação](#banco-de-dados-e-publicação), copie o endereço de conexão e salve em `backend/.env` (veja o `env.example`).
-
-Com o `.env` pronto, crie as tabelas e envie as linguagens ao banco (uma única vez):
+No terminal:
 
 ```bash
 cd backend
@@ -85,74 +81,75 @@ npm install
 npm run seed
 ```
 
-### 3. Inicie o backend
+O comando cria as tabelas e insere/atualiza as 45 linguagens do arquivo `backend/data/languages.js`. Pode ser executado novamente sem duplicar linguagens.
+
+### 2. Inicie a API
+
+Ainda dentro de `backend`:
 
 ```bash
-cd backend
-npm install
 npm start
 ```
 
-A API ficará disponível em `http://localhost:3000`. Para configurá-la, crie `backend/.env` a partir de `env.example` (por exemplo, no PowerShell, use `Copy-Item ..\env.example .env`):
+A API local fica em `http://localhost:3000`.
 
-```env
-PORT=3000
-DATABASE_URL=postgresql://usuario:senha@host/banco?sslmode=require
-FRONTEND_URL=
-GITHUB_TOKEN=
-```
+### 3. Abra o frontend
 
-| Variável       | Descrição                                                                                         |
-| -------------- | ------------------------------------------------------------------------------------------------- |
-| `PORT`         | Porta da API (padrão: `3000`; no Render é definida automaticamente)                               |
-| `DATABASE_URL` | Endereço de conexão do banco no Neon (obrigatório)                                                |
-| `FRONTEND_URL` | Sites autorizados a usar a API, separados por vírgula e sem barra no final. Vazio em desenvolvimento |
-| `GITHUB_TOKEN` | Opcional. Autentica as consultas ao GitHub e amplia o limite de requisições                       |
+Use o Live Server do VS Code na raiz do projeto (ou outro servidor estático). O frontend detecta `localhost` e consulta `http://localhost:3000/api/languages`.
 
-Não publique o arquivo `.env` nem o token.
+## Banco de dados e publicação no Vercel
 
-Durante o desenvolvimento, `npm run dev` reinicia o servidor automaticamente a cada alteração.
-
-### 4. Abra o frontend
-
-Com o servidor rodando, abra `index.html` no navegador ou use a extensão Live Server do VS Code. A partir da busca, selecione uma linguagem para abrir sua página de detalhes e carregar os projetos do GitHub.
-
-> No computador (localhost) o frontend usa a API local. No site publicado ele usa o endereço definido em `API_PUBLICA`, no `comum.js`, que deve apontar para a API no Render.
-
-## Banco de dados e publicação
-
-O frontend fica no GitHub Pages, a API Express no [Render](https://render.com) e as linguagens em um banco PostgreSQL no [Neon](https://neon.com), todos em planos gratuitos.
+A arquitetura publicada e:
 
 ```
-GitHub Pages (frontend)  ->  Render (API)  ->  Neon (PostgreSQL)
+Vercel (frontend + API serverless)  ->  Neon (PostgreSQL)
 ```
 
-### Tabelas
+### 1. Preparar o Neon
 
-- `linguagens`: nome, slug, descrição, ano e links.
-- `categorias`: lista de categorias.
-- `linguagem_categoria`: liga linguagens a categorias (muitos para muitos) e guarda a ordem em que aparecem.
+1. Use a connection string direta da role `neondb_owner` somente para executar `npm run seed`.
+2. No SQL Editor do Neon, execute `backend/scripts/usuario-leitura.sql`, substituindo `TROQUE_ESTA_SENHA` por uma senha forte e exclusiva.
+3. Gere a connection string da role `api_leitura` com **Connection pooling** ativado. Use essa URL na aplicação publicada.
+4. A role `api_leitura` precisa de permissão `USAGE` no schema `public` e `SELECT` nas tabelas.
 
-A criação está em `backend/scripts/schema.sql`. A API carrega as linguagens do banco, guarda o resultado em memória por 10 minutos e, se o banco ficar indisponível, continua respondendo com os últimos dados conhecidos.
+Use a conexão direta para tarefas administrativas/seed e a conexão com pooler para a API serverless.
 
-### 1. Banco no Neon
+### 2. Publicar no Vercel
 
-1. Crie uma conta e um projeto no Neon, escolhendo a região mais próxima.
-2. No painel, abra a opção de conexão (*Connect*) e copie o endereço de conexão. Ele é uma senha: guarde apenas em `backend/.env` e nas variáveis do Render.
-3. Em `backend`, rode `npm run seed` para criar as tabelas e enviar as linguagens.
-4. No editor SQL do Neon, execute `backend/scripts/usuario-leitura.sql` (trocando a senha). Esse usuário só consegue ler os dados e é o que a API usa em produção. O endereço de conexão dele é igual ao do dono, trocando usuário e senha.
+1. Envie as alterações para o GitHub e importe o repositorio no Vercel.
+2. Configure:
+   - **Framework Preset:** Other
+   - **Root Directory:** `./`
+   - **Build Command:** `npm run build`
+   - **Output Directory:** `public`
+   - **Install Command:** `npm install`
+3. Em **Environment Variables**, adicione:
+   - `DATABASE_URL`: connection string pooled da role `api_leitura`.
+   - `GITHUB_TOKEN`: opcional; token do GitHub para ampliar o limite de consultas.
+   - `NODE_ENV`: `production`.
+4. Faça o deploy.
 
-### 2. API no Render
+O script `scripts/build.js` copia o `index.html` da raiz para `public/index.html`, que e a pasta publicada. A API serverless fica em `api/[...path].js` e reutiliza as rotas do Express em `backend/server.js`.
 
-1. Crie um *Web Service* a partir do repositório do GitHub.
-2. Configure: **Root Directory** `backend`, **Build Command** `npm install`, **Start Command** `npm start`, **Instance Type** `Free` e **Health Check Path** `/health`.
-3. Em *Environment*, adicione `DATABASE_URL` (do usuário somente leitura) e `FRONTEND_URL` (`https://ruanreymond.github.io`). Adicione também `GITHUB_TOKEN`, se quiser.
-4. Copie o endereço do serviço (`https://seu-servico.onrender.com`) e coloque em `API_PUBLICA`, no `comum.js`, terminando com `/api/languages`.
+No Vercel, o frontend usa `/api/languages`, ou seja, chama a API no mesmo domínio. Localmente, continua usando `http://localhost:3000/api/languages`.
 
-### Observações sobre os planos gratuitos
+### 3. Testar a publicação
 
-- A API "dorme" após alguns minutos sem acessos e leva cerca de 1 minuto para acordar. O site mostra um aviso nesse caso.
-- Os limites e as regras dos planos mudam; confira nas páginas oficiais do Neon e do Render.
+Depois do deploy, teste:
+
+- `/` — página inicial.
+- `/api/languages` — lista de linguagens.
+- `/api/languages?search=python` — busca.
+- `/api/languages/python` — detalhes.
+- `/api/languages/python/github` — estatísticas e repositórios do GitHub.
+
+### Segurança
+
+- Nunca envie `backend/.env` ao GitHub.
+- Mantenha a connection string de `neondb_owner` apenas para tarefas administrativas.
+- Use `api_leitura` na aplicação publicada.
+- Nao coloque senhas reais em `backend/scripts/usuario-leitura.sql`.
+- Se uma senha ou connection string for publicada por engano, troque-a imediatamente no Neon.
 
 ## API
 

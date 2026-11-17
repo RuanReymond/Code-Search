@@ -8,8 +8,16 @@ if (!process.env.DATABASE_URL) {
 // Bancos na nuvem (Neon) exigem conexão segura; um Postgres local não
 const bancoLocal = /@(localhost|127\.0\.0\.1)[:/]/.test(process.env.DATABASE_URL);
 
+// O endereço copiado do Neon traz "sslmode=require". O driver pg avisa que esse modo
+// vai mudar de significado numa versão futura; "verify-full" mantém o comportamento
+// seguro de hoje e evita o aviso.
+const urlBanco = process.env.DATABASE_URL.replace(
+  /sslmode=(require|prefer|verify-ca)(?=&|$)/,
+  "sslmode=verify-full"
+);
+
 const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
+  connectionString: urlBanco,
   ssl: bancoLocal ? false : { rejectUnauthorized: true },
   max: 5,
   connectionTimeoutMillis: 15000, // o Neon pode levar alguns segundos para acordar
