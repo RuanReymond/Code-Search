@@ -1,276 +1,165 @@
-# Code Search
+# 🔎 Code Search
 
-Aplicação web para pesquisar e explorar linguagens de programação. O frontend consome uma API própria (Node.js + Express) para exibir dados das linguagens e, na página de detalhes, estatísticas e projetos populares do GitHub.
+**Explore linguagens de programação, descubra tecnologias e encontre projetos reais no GitHub.**
 
-## Funcionalidades
+O **Code Search** é uma aplicação web desenvolvida para facilitar a pesquisa e a exploração de diferentes linguagens de programação. A plataforma reúne informações sobre cada linguagem, como descrição, ano de criação, categorias e links oficiais, além de apresentar estatísticas e projetos populares encontrados no GitHub.
 
-- Busca por nome, descrição, categoria ou ano de criação.
-- Busca sem distinção de maiúsculas, minúsculas e acentos (por exemplo, `automacao` encontra `Automação`).
-- Filtro por categorias, com painel recolhível e contador de filtros ativos.
-- Combinação de busca por termo e filtro de categorias.
-- Pesquisa pelo botão ou pela tecla Enter.
-- API REST com busca, filtro por categoria e consulta por slug.
-- Página de detalhes para cada linguagem, com projetos e estatísticas do GitHub.
-- Cache em memória das respostas do GitHub para reduzir chamadas e evitar atingir o limite da API.
-- Layout responsivo.
+🌐 **Acesse o projeto:** [Code Search](https://code-search-lyart.vercel.app/)
 
-## Tecnologias
+📂 **Repositório:** [RuanReymond/Code-Search](https://github.com/RuanReymond/Code-Search)
 
-**Frontend**
-- HTML5
-- CSS3
-- JavaScript (sem frameworks)
+---
 
-**Backend**
-- Node.js
-- Express
-- CORS
-- dotenv
-- PostgreSQL (hospedado no Neon), com o driver `pg`
+## 📸 Sobre o projeto
 
-**Hospedagem**
-- Vercel: frontend estático e API serverless
-- Neon: banco de dados PostgreSQL
+O objetivo do Code Search é oferecer uma maneira simples e intuitiva de conhecer linguagens de programação e explorar seu ecossistema.
 
-## Estrutura do projeto
+Além das informações cadastradas no banco de dados, a aplicação utiliza uma integração com a API do GitHub para apresentar dados atualizados sobre repositórios públicos relacionados à linguagem selecionada.
 
+### ✨ Funcionalidades
+
+- **Pesquisa de linguagens:** encontre linguagens pelo nome, descrição, categoria ou ano de criação.
+- **Filtros por categoria:** explore tecnologias de acordo com suas áreas de aplicação.
+- **Página de detalhes:** consulte informações, características e links oficiais de cada linguagem.
+- **Integração com GitHub:** visualize estatísticas e repositórios populares relacionados à linguagem.
+- **Estatísticas:** consulte quantidade de repositórios, projetos com mais de 1.000 estrelas e novos repositórios no último ano.
+- **Principais projetos:** explore repositórios com informações sobre estrelas, forks e última atualização.
+
+---
+
+## 🛠️ Tecnologias utilizadas
+
+O projeto foi desenvolvido utilizando tecnologias de frontend e backend, além de serviços externos para hospedagem e integração de dados.
+
+| Tecnologia | Utilização |
+|---|---|
+| HTML5 | Estrutura das páginas |
+| CSS3 | Estilização e responsividade |
+| JavaScript | Funcionalidades e interatividade |
+| Node.js | Ambiente de execução do backend |
+| Express | Desenvolvimento da API REST |
+| PostgreSQL | Armazenamento dos dados |
+| Neon | Hospedagem do banco de dados |
+| GitHub REST API | Consulta de estatísticas e repositórios |
+| Vercel | Hospedagem e publicação da aplicação |
+
+## ⚙️ Como funciona?
+
+O Code Search possui uma arquitetura dividida entre frontend, backend e banco de dados.
+
+1. O usuário realiza uma pesquisa pela interface da aplicação.
+2. O frontend envia uma requisição para a API REST desenvolvida com Node.js e Express.
+3. A API consulta o banco de dados PostgreSQL hospedado no Neon e retorna as informações correspondentes.
+4. Ao acessar os detalhes de uma linguagem, o backend também consulta a API do GitHub.
+5. Os resultados são organizados e apresentados na interface.
+
+### Arquitetura
+
+```text
+                  USUARIO
+                     |
+                     v
+             FRONTEND (HTML/CSS/JS)
+                     |
+                     v
+              API REST PROPRIA
+               (Node.js/Express)
+                  /       \
+                 /         \
+                v           v
+          BANCO DE       GITHUB API
+          DADOS NEON
+          (PostgreSQL)
 ```
-.
-├── api/
-│   └── [...path].js             # Entrada serverless do Vercel
-├── backend/
-│   ├── data/languages.js        # Dados usados pelo seed
-│   ├── db.js                    # Conexao PostgreSQL e cache
-│   ├── server.js                # API Express
-│   ├── package.json
-│   └── scripts/
-│       ├── schema.sql
-│       ├── seed.js
-│       └── usuario-leitura.sql
-├── public/
-│   ├── pages/linguagem.html
-│   ├── scripts/
-│   └── styles/
-├── scripts/build.js             # Copia index.html para a pasta publicada
-├── index.html                   # Pagina inicial fonte
-├── package.json
-├── vercel.json
-├── env.example
-└── .gitignore
+
+## 🚀 Executar localmente
+
+Para executar o projeto em sua máquina, é necessário ter o [Node.js](https://nodejs.org/) instalado e configurar uma conexão com PostgreSQL.
+
+### 1. Clone o repositório
+
+```bash
+git clone https://github.com/RuanReymond/Code-Search.git
 ```
 
-## Como executar localmente
+Entre na pasta:
 
-### 1. Configure o banco de dados
+```bash
+cd Code-Search
+```
 
-Crie um projeto PostgreSQL no Neon. Para preparar o banco, use a connection string da role proprietária (`neondb_owner`) no arquivo `backend/.env`:
+### 2. Instale as dependências
+
+Na raiz do projeto:
+
+```bash
+npm install
+npm --prefix backend install
+```
+
+### 3. Configure as variáveis de ambiente
+
+Crie um arquivo `.env` dentro da pasta `backend`:
 
 ```env
-DATABASE_URL=postgresql://USUARIO:SENHA@HOST/NEONDB?sslmode=require
-GITHUB_TOKEN=
+DATABASE_URL=sua_connection_string_postgresql
+GITHUB_TOKEN=seu_token_github
 PORT=3000
 ```
 
-Não publique o arquivo `backend/.env` nem compartilhe sua connection string.
+- `DATABASE_URL`: endereço de conexão com o banco PostgreSQL.
+- `GITHUB_TOKEN`: token de acesso pessoal do GitHub (opcional).
+- `PORT`: porta utilizada pelo servidor local.
 
-No terminal:
+**Importante:** nunca compartilhe ou envie seu arquivo `.env` para o GitHub. Utilize o `env.example` como referência e mantenha suas credenciais protegidas.
+
+### 4. Prepare o banco de dados
+
+Na pasta `backend`, execute:
 
 ```bash
-cd backend
-npm install
 npm run seed
 ```
 
-O comando cria as tabelas e insere/atualiza as 45 linguagens do arquivo `backend/data/languages.js`. Pode ser executado novamente sem duplicar linguagens.
+Esse comando prepara as tabelas e insere os dados das linguagens no banco de dados configurado.
 
-### 2. Inicie a API
+### 5. Inicie o servidor
 
-Ainda dentro de `backend`:
+Ainda na pasta `backend`:
 
 ```bash
 npm start
 ```
 
-A API local fica em `http://localhost:3000`.
+A API estará disponível em:
 
-### 3. Abra o frontend
-
-Use o Live Server do VS Code na raiz do projeto (ou outro servidor estático). O frontend detecta `localhost` e consulta `http://localhost:3000/api/languages`.
-
-## Banco de dados e publicação no Vercel
-
-A arquitetura publicada e:
-
-```
-Vercel (frontend + API serverless)  ->  Neon (PostgreSQL)
+```text
+http://localhost:3000
 ```
 
-### 1. Preparar o Neon
+Com o backend em execução, abra o frontend utilizando uma extensão como Live Server.
 
-1. Use a connection string direta da role `neondb_owner` somente para executar `npm run seed`.
-2. No SQL Editor do Neon, execute `backend/scripts/usuario-leitura.sql`, substituindo `TROQUE_ESTA_SENHA` por uma senha forte e exclusiva.
-3. Gere a connection string da role `api_leitura` com **Connection pooling** ativado. Use essa URL na aplicação publicada.
-4. A role `api_leitura` precisa de permissão `USAGE` no schema `public` e `SELECT` nas tabelas.
+---
 
-Use a conexão direta para tarefas administrativas/seed e a conexão com pooler para a API serverless.
+## 🔗 Endpoints da API
 
-### 2. Publicar no Vercel
+A aplicação possui uma API REST própria para disponibilizar as informações das linguagens.
 
-1. Envie as alterações para o GitHub e importe o repositorio no Vercel.
-2. Configure:
-   - **Framework Preset:** Other
-   - **Root Directory:** `./`
-   - **Build Command:** `npm run build`
-   - **Output Directory:** `public`
-   - **Install Command:** `npm install`
-3. Em **Environment Variables**, adicione:
-   - `DATABASE_URL`: connection string pooled da role `api_leitura`.
-   - `GITHUB_TOKEN`: opcional; token do GitHub para ampliar o limite de consultas.
-   - `NODE_ENV`: `production`.
-4. Faça o deploy.
+| Método | Endpoint | Descrição |
+|---|---|---|
+| GET | `/api/languages` | Lista as linguagens disponíveis |
+| GET | `/api/languages?search=python` | Pesquisa por uma linguagem |
+| GET | `/api/languages?categoria=Backend` | Filtra por categoria |
+| GET | `/api/languages/:slug` | Consulta os detalhes de uma linguagem |
+| GET | `/api/languages/:slug/github` | Consulta dados e repositórios do GitHub |
+| GET | `/health` | Verifica o funcionamento da API |
 
-O script `scripts/build.js` copia o `index.html` da raiz para `public/index.html`, que e a pasta publicada. A API serverless fica em `api/[...path].js` e reutiliza as rotas do Express em `backend/server.js`.
+## 📌 Próximos passos
 
-No Vercel, o frontend usa `/api/languages`, ou seja, chama a API no mesmo domínio. Localmente, continua usando `http://localhost:3000/api/languages`.
+O Code Search continuará recebendo melhorias e novas funcionalidades. A ideia é expandir a plataforma, aprimorar a experiência de pesquisa e adicionar novos recursos para tornar a exploração de linguagens de programação ainda mais completa.
 
-### 3. Testar a publicação
+---
 
-Depois do deploy, teste:
+**Desenvolvido por Ruan Reymond** 💻
 
-- `/` — página inicial.
-- `/api/languages` — lista de linguagens.
-- `/api/languages?search=python` — busca.
-- `/api/languages/python` — detalhes.
-- `/api/languages/python/github` — estatísticas e repositórios do GitHub.
-
-### Segurança
-
-- Nunca envie `backend/.env` ao GitHub.
-- Mantenha a connection string de `neondb_owner` apenas para tarefas administrativas.
-- Use `api_leitura` na aplicação publicada.
-- Nao coloque senhas reais em `backend/scripts/usuario-leitura.sql`.
-- Se uma senha ou connection string for publicada por engano, troque-a imediatamente no Neon.
-
-## API
-
-Base: `http://localhost:3000`
-
-| Método | Rota                          | Descrição                                      |
-| ------ | ----------------------------- | ---------------------------------------------- |
-| GET    | `/`                           | Informações e lista de endpoints               |
-| GET    | `/api/languages`              | Lista todas as linguagens                      |
-| GET    | `/api/languages?search=termo` | Busca por nome, descrição, categoria ou ano    |
-| GET    | `/api/languages?categoria=Backend,IA` | Filtra por uma ou mais categorias      |
-| GET    | `/api/languages/:slug`        | Retorna os detalhes de uma linguagem pelo slug |
-| GET    | `/api/languages/:slug/github` | Retorna estatísticas e até 10 repositórios populares no GitHub |
-
-Exemplo de busca de repositórios Python:
-
-```
-GET /api/languages/python/github
-```
-
-A rota do GitHub aceita as linguagens listadas em `backend/data/languages.js`. Bash é pesquisado pela categoria `Shell`, que é como o GitHub classifica essa linguagem.
-
-Os parâmetros `search` e `categoria` podem ser combinados. Exemplo:
-
-```
-GET /api/languages?search=java&categoria=Mobile
-```
-
-Resposta:
-
-```json
-{
-  "total": 2,
-  "data": [
-    {
-      "id": 2,
-      "nome": "JavaScript",
-      "slug": "javascript",
-      "descricao": "...",
-      "categoria": ["Frontend", "Backend", "Mobile"],
-      "ano": 1995,
-      "site": "https://developer.mozilla.org/pt-BR/docs/Web/JavaScript",
-      "documentacao": "https://developer.mozilla.org/pt-BR/docs/Web/JavaScript",
-      "download": "https://nodejs.org/pt/download"
-    }
-  ]
-}
-```
-
-Uma linguagem inexistente em `/api/languages/:slug` retorna status `404` com `{ "error": "Linguagem nao encontrada" }`. A rota do GitHub retorna `404` se o slug não tiver mapeamento e `502` se não for possível consultar o GitHub. Se o limite de requisições do GitHub for atingido, a API retorna `429`.
-
-### Resposta do endpoint do GitHub
-
-`GET /api/languages/python/github` retorna os dez repositórios mais populares (ordenados por estrelas), além de estatísticas. `total` é a quantidade de repositórios na lista retornada; `stats.totalRepositories` é o total informado pela busca do GitHub. As contagens das estatísticas secundárias podem ser `null` se o GitHub não permitir essas consultas.
-
-```json
-{
-  "language": "Python",
-  "total": 10,
-  "stats": {
-    "totalRepositories": 123456,
-    "repositoriesOver1000Stars": 500,
-    "newRepositoriesLastYear": 12000
-  },
-  "searchUrl": "https://github.com/search?q=language%3APython&type=repositories&s=stars&o=desc",
-  "data": [
-    {
-      "name": "organizacao/projeto",
-      "description": "Descrição do projeto",
-      "stars": 50000,
-      "forks": 8000,
-      "url": "https://github.com/organizacao/projeto",
-      "language": "Python",
-      "updatedAt": "2026-10-01T12:00:00Z"
-    }
-  ]
-}
-```
-
-As respostas completas do GitHub ficam em cache por 30 minutos. Se alguma das consultas secundárias falhar, a resposta parcial fica em cache por 1 minuto.
-
-## Como adicionar uma linguagem
-
-As linguagens ficam no banco de dados. O arquivo `backend/data/languages.js` é a fonte usada para popular o banco: para incluir uma nova, adicione um objeto ao array seguindo esta estrutura:
-
-```js
-{
-    id: 7,
-    nome: "Go",
-    slug: "go",
-    descricao: "Descrição da linguagem.",
-    categoria: ["Backend", "Cloud"],
-    ano: 2009,
-    site: "https://go.dev/",
-    documentacao: "https://go.dev/doc/",
-    download: "https://go.dev/dl/"
-}
-```
-
-Depois rode `npm run seed` (com o `DATABASE_URL` do dono do banco) para enviar a alteração ao banco. A API atualiza em até 10 minutos, ou imediatamente se o servidor for reiniciado. Se usar uma categoria nova, adicione também o checkbox correspondente no painel de filtros do `index.html`. Para habilitar a consulta do GitHub para uma linguagem nova, adicione o slug e o nome reconhecido pelo GitHub ao objeto `githubLanguageNames` em `backend/server.js`.
-
-| Campo          | Tipo     | Descrição                                      |
-| -------------- | -------- | ---------------------------------------------- |
-| `id`           | número   | Identificador único                            |
-| `nome`         | texto    | Nome da linguagem                              |
-| `slug`         | texto    | Identificador em formato de URL                |
-| `descricao`    | texto    | Resumo sobre a linguagem e seus usos           |
-| `categoria`    | lista    | Áreas de atuação (ex.: Backend, Frontend, IA)  |
-| `ano`          | número   | Ano de criação                                 |
-| `site`         | texto    | Link do site oficial                           |
-| `documentacao` | texto    | Link da documentação                           |
-| `download`     | texto    | Link da página de download                     |
-
-## Linguagens incluídas
-
-45 linguagens, incluindo Python, JavaScript, Java, C#, PHP, TypeScript, C, C++, Go, Rust, SQL, Bash e PowerShell.
-
-## Contribuição
-
-Sugestões e melhorias são bem-vindas. Para contribuir, abra uma issue descrevendo a proposta ou envie um pull request.
-
-## Contato
-
-Dúvidas ou suporte: reymondruan4@gmail.com
+[GitHub](https://github.com/RuanReymond) · [LinkedIn](www.linkedin.com/in/ruan-reymond-b9605a2ba)
